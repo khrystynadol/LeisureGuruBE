@@ -1,28 +1,35 @@
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-from os import path
-# from database.models import User
-
-DB_NAME = "database.db"
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+DB_NAME = 'LeisureGuru'
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:12345@localhost:5432/{DB_NAME}'
+app.debug = True
+
 
 # Initialize the db
 db = SQLAlchemy(app)
 
 
 class User(db.Model):
+    __tablename__ = 'user_table'
+
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(150))
-    last_name = db.Column(db.String(150))
+    first_name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
     birth_date = db.Column(db.Date)
-    email = db.Column(db.String(150), unique=True)
-    password1 = db.Column(db.String(150))
-    password2 = db.Column(db.String(150))
+    email = db.Column(db.String(50), unique=True)
+    password1 = db.Column(db.String(50))
+    password2 = db.Column(db.String(50))
     confirm_pw = db.Column(db.Boolean, default=False)
     verification = db.Column(db.Boolean, default=False)
     status = db.Column(db.Boolean, default=False)
+
+    def __repr__(self):
+        return "<User: '{}' '{}', email: '{}'>" \
+            .format(self.first_name, self.last_name, self.email)
 
 
 @app.route("/")
@@ -39,26 +46,18 @@ def hello_world(value):
 def test():
     title = "Add data testing..."
     if request.method == 'POST':
-        first_name = request.form.get('firstName')
-        last_name = request.form.get('lastName')
-        email = request.form.get('email')
-        password1 = request.form.get('password1')
-        password2 = request.form.get('password2')
-
-        new_user = User(first_name=first_name, last_name=last_name, email=email,
-                        password1=password1, password2=password2)
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Account created!', category='success')
+        if request.is_json:
+            data_user = request.get_json()
+            new_user = User(first_name=data_user['first_name'], last_name=data_user['last_name'],
+                            email=data_user['email'],
+                            password1=data_user['password1'], password2=data_user['password2'])
+            db.session.add(new_user)
+            db.session.commit()
+            return {"message": f"User {new_user.first_name} {new_user.last_name} has been created successfully."}
+        else:
+            return {"error": "The request payload is not in JSON format"}
     return render_template("test.html", title=title)
 
 
-def create_database(dbapp):
-    if not path.exists("/database/" + DB_NAME):
-        db.create_all(app=dbapp)
-        print('Created Database!')
-
-
 if __name__ == "__main__":
-    create_database(app)
     app.run()
