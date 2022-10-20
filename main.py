@@ -1,7 +1,11 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash, abort
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import login_required, current_user
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+
 DB_NAME = 'LeisureGuru'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -42,9 +46,8 @@ def hello_world(value):
     return "Hello world " + value, 200
 
 
-@app.route("/test", methods=['POST', 'GET'])
-def test():
-    title = "Add data testing..."
+@app.route("/signup", methods=['POST', 'GET'])
+def signup():
     if request.method == 'POST':
         if request.is_json:
             data_user = request.get_json()
@@ -56,7 +59,22 @@ def test():
             return {"message": f"User {new_user.first_name} {new_user.last_name} has been created successfully."}
         else:
             return {"error": "The request payload is not in JSON format"}
-    return "Test :)"
+    return "Sign up :)"
+
+
+@app.route("/delete/<int:user_id>", methods=['GET', 'DELETE'])
+# @login_required
+def delete(user_id):
+    if user_id == current_user.id:
+        user_to_delete = User.query.filter_by(id=user_id).first()
+        if request.method == 'DELETE':
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            flash("Success")
+        abort(404)
+    else:
+        flash("You try to delete other user")
+    return "Delete user"
 
 
 if __name__ == "__main__":
