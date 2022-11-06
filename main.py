@@ -1,12 +1,31 @@
-from flask import request, flash, abort
+from flask import request, flash, abort, render_template, url_for
 from flask_login import login_required, current_user, login_user, logout_user, LoginManager  # , UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_mail import Mail
 import re
-from database.models import app, db, User, Place
+import os
+from token import generate_confirmation_token, confirm_token
+from email import send_email
+from database.models import app, db, User, Place, RegistrationForm
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+mail = Mail(app)
+
+# mail settings
+MAIL_SERVER = 'smtp.gmail.com'
+MAIL_PORT = 465
+MAIL_USE_TLS = False
+MAIL_USE_SSL = True
+
+# gmail authentication
+MAIL_USERNAME = os.environ['leisure.guru.ver@gmail.com']
+MAIL_PASSWORD = os.environ['LeisureGuru12345']
+
+# mail accounts
+# MAIL_DEFAULT_SENDER = 'from@example.com'
 
 
 @login_manager.user_loader
@@ -23,40 +42,94 @@ def home():
     return "Home page :)"
 
 
-@app.route("/signup", methods=['POST', 'GET'])
-def signup():
+# @app.route("/signup", methods=['POST', 'GET'])
+# def signup():
+#     if request.method == 'POST':
+#         if request.is_json:
+#             data_user = request.get_json()
+#             new_user = User(first_name=data_user['firstName'], last_name=data_user['lastName'],
+#                             email=data_user['email'], birth_date=data_user['date'],
+#                             password1=generate_password_hash(data_user['password']))
+#             find_email = User.query.filter_by(email=new_user.email).first()
+#
+#             if find_email is not None:
+#                 flash("Email is already used")
+#                 abort(400)
+#             elif not re.match(r'[^@]+@[^@]+\.[^@]+', new_user.email):
+#                 flash("Incorrect email")
+#                 abort(400)
+#             elif not re.match(r'[A-Za-z]+', new_user.first_name):
+#                 flash("Incorrect first name")
+#                 abort(400)
+#             elif not re.match(r'[A-Za-z]+', new_user.last_name):
+#                 flash("Incorrect last name")
+#                 abort(400)
+#             elif not new_user.first_name or not new_user.last_name or not new_user.password1 or not new_user.email \
+#                     or not new_user.birth_date:
+#                 flash("All fields should be entered")
+#                 abort(400)
+#             else:
+#                 db.session.add(new_user)
+#                 db.session.commit()
+#                 return {"id": new_user.id,
+#                         "email": new_user.email}
+#         else:
+#             abort(400)
+#     return "Sign up :)"
+
+
+@app.route('/confirm/<token>')
+@login_required
+def confirm_email(token):
+    try:
+        email_to_check = confirm_token(token)
+    finally:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+
+    user_to_check = User.query.filter_by(email=email_to_check).first_or_404()
+    if user.confirmed:
+        flash('Account already confirmed. Please login.', 'success')
+    else:
+        user_to_check.confirmed = True
+        db.session.add(user_to_check)
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!', 'success')
+    return "Confirm email"  # redirect(url_for('main.home'))
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
     if request.method == 'POST':
         if request.is_json:
-            data_user = request.get_json()
-            new_user = User(first_name=data_user['firstName'], last_name=data_user['lastName'],
-                            email=data_user['email'], birth_date=data_user['date'],
-                            password1=generate_password_hash(data_user['password']))
-            find_email = User.query.filter_by(email=new_user.email).first()
+            form = RegistrationForm(request.form)
+            if form.validate_on_submit():
+                new_user = User(
+                    first_name=form.first_name.data,
+                    last_name=form.last_name.data,
+                    email=form.email.data,
+                    birth_date=form.birth_date.data,
+                    password1=generate_password_hash(form.password1.data)
+                )
+                find_email = User.query.filter_by(email=user.email).first()
+                if find_email is not None:
+                    flash("Email is already used", "error")
+                else:
+                    db.session.add(user)
+                    db.session.commit()
+                    return {"id": new_user.id,
+                            "email": new_user.email}
 
-            if find_email is not None:
-                flash("Email is already used")
-                abort(400)
-            elif not re.match(r'[^@]+@[^@]+\.[^@]+', new_user.email):
-                flash("Incorrect email")
-                abort(400)
-            elif not re.match(r'[A-Za-z]+', new_user.first_name):
-                flash("Incorrect first name")
-                abort(400)
-            elif not re.match(r'[A-Za-z]+', new_user.last_name):
-                flash("Incorrect last name")
-                abort(400)
-            elif not new_user.first_name or not new_user.last_name or not new_user.password1 or not new_user.email \
-                    or not new_user.birth_date:
-                flash("All fields should be entered")
-                abort(400)
-            else:
-                db.session.add(new_user)
-                db.session.commit()
-                return {"id": new_user.id,
-                        "email": new_user.email}
-        else:
-            abort(400)
-    return "Sign up :)"
+                token = generate_confirmation_token(new_user.email)
+                confirm_url = url_for('new_user.confirm_email', token=token, _external=True)
+                html = render_template('activate.html', confirm_url=confirm_url)
+                subject = "Please confirm your email"
+                send_email(new_user.email, subject, html)
+
+                login_user(new_user)
+
+                flash('A confirmation email has been sent via email.', 'success')
+            return "Home"  # redirect(url_for("main.home"))
+    return "Register"  # render_template('/register', form=form)
 
 
 @app.route("/login", methods=['PUT', 'GET'])
