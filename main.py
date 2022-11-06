@@ -1,13 +1,18 @@
-from flask import request, flash, abort
+from flask import request, flash, abort, render_template, url_for
 from flask_login import login_required, current_user, login_user, logout_user, LoginManager  # , UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_mail import Mail
 import re
-from database.models import app, db, User, Place
+import os
+from token import generate_confirmation_token, confirm_token
+from email import send_email
+from database.models import app, db, User, Place, RegistrationForm
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+mail = Mail(app)
 
 # mail settings
 MAIL_SERVER = 'smtp.gmail.com'
@@ -20,7 +25,8 @@ MAIL_USERNAME = os.environ['leisure.guru.ver@gmail.com']
 MAIL_PASSWORD = os.environ['LeisureGuru12345']
 
 # mail accounts
-#MAIL_DEFAULT_SENDER = 'from@example.com'
+# MAIL_DEFAULT_SENDER = 'from@example.com'
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -76,53 +82,55 @@ def home():
 @login_required
 def confirm_email(token):
     try:
-        email = confirm_token(token)
-    except:
+        email_to_check = confirm_token(token)
+    finally:
         flash('The confirmation link is invalid or has expired.', 'danger')
-    user = User.query.filter_by(email=email).first_or_404()
+
+    user_to_check = User.query.filter_by(email=email_to_check).first_or_404()
     if user.confirmed:
         flash('Account already confirmed. Please login.', 'success')
     else:
-        user.confirmed = True
-        db.session.add(user)
+        user_to_check.confirmed = True
+        db.session.add(user_to_check)
         db.session.commit()
         flash('You have confirmed your account. Thanks!', 'success')
-    return redirect(url_for('main.home'))
+    return "Confirm email"  # redirect(url_for('main.home'))
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm(request.form)
-    if form.validate_on_submit():
-        user = User(
-            first=form.first_name.data,
-            last=form.last_name.data,
-            birth=form.birth_date.data,
-            email=form.email.data,
-            password1=form.password1.data,
-            password2=form.password2.data
-        )
-        find_email = User.query.filter_by(email=user.email).first()
-        if find_email is not None:
-            flash('Email is alredy used')
-        else:
-            db.session.add(user)
-            db.session.commit()
-            return {"id": new_user.id,
-                    "email": new_user.email}
+    if request.method == 'POST':
+        if request.is_json:
+            form = RegistrationForm(request.form)
+            if form.validate_on_submit():
+                new_user = User(
+                    first_name=form.first_name.data,
+                    last_name=form.last_name.data,
+                    email=form.email.data,
+                    birth_date=form.birth_date.data,
+                    password1=generate_password_hash(form.password1.data)
+                )
+                find_email = User.query.filter_by(email=user.email).first()
+                if find_email is not None:
+                    flash("Email is already used", "error")
+                else:
+                    db.session.add(user)
+                    db.session.commit()
+                    return {"id": new_user.id,
+                            "email": new_user.email}
 
-        token = generate_confirmation_token(user.email)
-        confirm_url = url_for('user.confirm_email', token=token, _external=True)
-        html = render_template('activate.html', confirm_url=confirm_url)
-        subject = "Please confirm your email"
-        send_email(user.email, subject, html)
+                token = generate_confirmation_token(new_user.email)
+                confirm_url = url_for('new_user.confirm_email', token=token, _external=True)
+                html = render_template('activate.html', confirm_url=confirm_url)
+                subject = "Please confirm your email"
+                send_email(new_user.email, subject, html)
 
-        login_user(user)
+                login_user(new_user)
 
-        flash('A confirmation email has been sent via email.', 'success')
-        return redirect(url_for("main.home"))
+                flash('A confirmation email has been sent via email.', 'success')
+            return "Home"  # redirect(url_for("main.home"))
+    return "Register"  # render_template('/register', form=form)
 
-    return render_template('user/register.html', form=form)
 
 @app.route("/login", methods=['PUT', 'GET'])
 def login():
