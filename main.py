@@ -1,60 +1,21 @@
-from flask import Flask, request, flash, abort
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask import request, flash, abort
 from flask_login import login_required, current_user, login_user, logout_user, LoginManager  # , UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
-
-app = Flask(__name__)
-CORS(app)
-db = SQLAlchemy(app)
-
-DB_NAME = 'LeisureGuru'
-
-app.secret_key = 'super secret key'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:12345@localhost:5432/{DB_NAME}'
-app.debug = True
+from database.models import app, db, User, Place
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 
-class User(db.Model):
-    __tablename__ = 'user_table'
-
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
-    birth_date = db.Column(db.Date)
-    email = db.Column(db.String(50), unique=True)
-    password1 = db.Column(db.String(200))
-    password2 = db.Column(db.String(200))
-    confirm_pw = db.Column(db.Boolean, default=False)
-    verification = db.Column(db.Boolean, default=False)
-    status = db.Column(db.Boolean, default=True)
-
-    def __repr__(self):
-        return "<User: '{}' '{}', email: '{}'>" \
-            .format(self.first_name, self.last_name, self.email)
-
-    def is_authenticated(self) -> bool:
-        return True
-
-    def is_active(self) -> bool:
-        return True
-
-    def is_anonymous(self) -> bool:
-        return False
-
-    def get_id(self):
-        return self.id
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
+
+def load_all_places():
+    return Place.query.all()
 
 
 @app.route("/")
@@ -137,6 +98,18 @@ def user(user_id):
             flash("You try to delete other user")
             abort(404)
     return "User"
+
+
+@app.route("/place", methods=['GET'])
+@login_required
+def place():
+    if request.method == 'GET':
+        places = load_all_places()
+        # we need to remake it to work with FE correctly
+        return {
+            places
+        }
+    return "Place"
 
 
 if __name__ == "__main__":
