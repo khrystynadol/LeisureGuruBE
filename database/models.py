@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from wtforms import Form, BooleanField, StringField, PasswordField, DateField, EmailField, validators
 
 app = Flask(__name__)
 CORS(app)
@@ -90,6 +91,17 @@ class PlaceSeason(db.Model):
     place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
     season_id = db.Column(db.Integer, db.ForeignKey('season.id'))
 
+
+class RegistrationForm(Form):
+    first_name = StringField('First name', [validators.DataRequired(), validators.Length(min=1,max=50)])
+    last_name = StringField('Last name', [validators.DataRequired(), validators.Length(min=1,max=50)])
+    birth_date = DateField('Date of birth', [validators.DataRequired()], format = '%d/%m/%Y')
+    email = EmailField('Email', [validators.DataRequired(), validators.Email()])
+    password1 = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('password2',message='Password must match')
+    ])
+    password2 = PasswordField('Repeat password')
 
 # class Event(db.Model):
 #     __tablename__ = 'event'
