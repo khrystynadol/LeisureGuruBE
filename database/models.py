@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from wtforms import Form, BooleanField, StringField, PasswordField, DateField, EmailField, validators
 
 app = Flask(__name__)
 CORS(app)
@@ -73,6 +72,20 @@ class Place(db.Model):
     image = db.Column(db.String(250), nullable=False)
     visible = db.Column(db.Boolean, default=False)
 
+    def as_dict(self):
+        return {p.name: getattr(self, p.name) for p in self.__table__.columns}
+
+    def format(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'country': self.country,
+            'city': self.city,
+            'description': self.description,
+            'rate': self.rate,
+            'image': self.image
+        }
+
 
 class PlaceActivity(db.Model):
     __tablename__ = 'place_activity'
@@ -88,22 +101,6 @@ class PlaceSeason(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
     season_id = db.Column(db.Integer, db.ForeignKey('season.id'))
-
-
-class RegistrationForm(Form):
-    first_name = StringField('First name', [validators.DataRequired("Please enter your first name."),
-                                            validators.Length(min=1, max=50)])
-    last_name = StringField('Last name', [validators.DataRequired("Please enter your last name."),
-                                          validators.Length(min=1, max=50)])
-    birth_date = DateField('Date of birth', [validators.DataRequired("Please enter your birth date.")],
-                           format='%d/%m/%Y')
-    email = EmailField('Email', [validators.DataRequired("Please enter your email address."),
-                                 validators.Email("This field requires a valid email address")])
-    password1 = PasswordField('Password', [
-        validators.DataRequired("Please enter your password."),
-        validators.EqualTo('password2', message='Password must match')
-    ])
-    password2 = PasswordField("Please confirm your password")
 
 
 # class Event(db.Model):

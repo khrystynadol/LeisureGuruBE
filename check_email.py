@@ -1,7 +1,6 @@
-from flask_mail import Message
-from main import mail, app
-
-
+# from flask_mail import Message
+# from main import app  # , mail
+'''
 def send_email(to, subject, template):
     msg = Message(
         subject,
@@ -10,3 +9,4 @@ def send_email(to, subject, template):
         sender=app.config['MAIL_DEFAULT_SENDER']
     )
     mail.send(msg)
+'''
