@@ -1,14 +1,22 @@
-from flask_wtf import FlaskForm
-from wtforms import BooleanField, StringField, PasswordField, DateField, EmailField, validators
+from database.models import db
+import datetime
+from marshmallow import Schema, fields, validate, validates, ValidationError
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
-class RegistrationForm(FlaskForm):
-    first_name = StringField('First name', [validators.DataRequired("Please enter your first name."),
-                                            validators.Length(min=1, max=50)])
-    last_name = StringField('Last name', [validators.DataRequired("Please enter your last name."),
-                                          validators.Length(min=1, max=50)])
-    birth_date = DateField('Date of birth', [validators.DataRequired("Please enter your birth date.")],
-                           format='%Y-%m-%d')
-    email = EmailField('Email', [validators.DataRequired("Please enter your email address."),
-                                 validators.Email("This field requires a valid email address")])
-    password = PasswordField('Password', [validators.DataRequired("Please enter your password.")])
+class UserSchema(Schema):
+    id = fields.Integer(validate=validate.Range(min=0))
+    first_name = fields.Str(validate=[validate.Regexp("[a-zA-z]*$"),
+                            validate.Length(min=0, max=45)],
+                            required=True)
+    last_name = fields.Str(validate=[validate.Regexp("[a-zA-z]*$"),
+                           validate.Length(min=0, max=45)],
+                           required=True)
+    email = fields.Email(required=True)
+    birth_date = fields.Date(format='%Y-%m-%d',
+                             validate=lambda x: x <= datetime.date.today(),
+                             required=True)
+    password1 = fields.Function(  # validate=validate.Length(min=5, max=15),
+                               deserialize=lambda password: generate_password_hash(password),
+                               load_only=True, required=True
+                               )
