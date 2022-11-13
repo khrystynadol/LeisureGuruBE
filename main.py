@@ -136,9 +136,9 @@ def confirm_email(token):
 '''
 
 
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/registration', methods=['GET', 'POST'])
 @error_handler
-def register():
+def registration():
     if request.method == 'POST' and request.is_json:
         data_user = UserSchema().load(request.json)
         new_user = User(**data_user)
@@ -146,7 +146,9 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
-        return jsonify(UserSchema().dump(new_user)), 201
+        return {"id": new_user.id,
+                "email": new_user.email}, 201
+        # jsonify(UserSchema().dump(new_user)), 201
     return "Register"  # render_template('/register', form=form)
 
 

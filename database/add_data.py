@@ -28,7 +28,10 @@ with app.app_context():
                                "place to get a blast of high culture at a matinee or evening performance, where "
                                "seats are implausibly inexpensive. In residence is a 90-piece orchestra, first-class "
                                "soloists and a ballet troupe, all with an extensive repertoire.",
-                   rate=5, image="https://www.bing.com/images/blob?bcid=qDTzl4hDTtUEIg", visible=True)
+                   rate=5,
+                   image="https://cdn.thecrazytourist.com/wp-content/"
+                         "uploads/2018/08/ccimage-shutterstock_212603344.jpg",
+                   visible=True)
     place2 = Place(name="Market Square", country="Ukraine", city="Lviv",
                    description="It seems like all streets in the Old Town converge on this historic and hectic "
                                "central square surrounding Lviv’s Town Hall. Market Square heaves with locals, "
@@ -39,7 +42,8 @@ with app.app_context():
                                "are numerous museums and tasteful artisan shops. Rounding off the scene are four "
                                "classical fountains, one on each corner and depicting "
                                "Diana, Neptune, Adonis and Amphitrite.",
-                   rate=5, image="https://www.bing.com/images/blob?bcid=qM6.eJSOOtUEnA", visible=True)
+                   rate=5, image="https://cdn.thecrazytourist.com/wp-content/"
+                                 "uploads/2018/08/ccimage-shutterstock_342499724.jpg", visible=True)
     place3 = Place(name="Pharmacy Museum", country="Ukraine", city="Lviv",
                    description="The “Under the Black Eagle Pharmacy” opened in 1735, and is the oldest pharmacy "
                                "still in business in the Ukraine. Since the 1960s it has lifted the lid on its old "
@@ -51,7 +55,8 @@ with app.app_context():
                                "pestles and mortars, as well as cabinets laden with earthenware medicine jars and "
                                "antique books going back to the 1700s.",
                    rate=5,
-                   image="https://www.bing.com/images/blob?bcid=RNqyWn1Ok9UEqxcxoNWLuD9SqbotqVTdP-w", visible=True)
+                   image="https://cdn.thecrazytourist.com/"
+                         "wp-content/uploads/2018/08/ccimage-shutterstock_666846613.jpg", visible=True)
     place4 = Place(name="Armenian Cathedral", country="Ukraine", city="Lviv",
                    description="There has been an Armenian community in Lviv since the 13th century, and it’s around "
                                "1,000-strong today after immigration during the Soviet Union. As the oldest church "
@@ -62,7 +67,8 @@ with app.app_context():
                                "dates to the 15th century. In the 1900s the church’s interior walls were painted with "
                                "bold Art Nouveau frescoes by the Polish artists "
                                "Józef Mehoffer and Jan Henryk de Rosen.",
-                   rate=5, image="https://www.bing.com/images/blob?bcid=qA-4yI.j0tUErA", visible=True)
+                   rate=5, image="https://cdn.thecrazytourist.com/wp-content/uploads"
+                                 "/2018/08/ccimage-shutterstock_1121748860.jpg", visible=True)
     place5 = Place(name="Lviv Arsenal", country="Ukraine", city="Lviv",
                    description="There’s a department of the Lviv Historical Museum at one of the city’s three "
                                "historic Arsenal buildings. It’s a stiff walk uphill, just east of the centre, "
@@ -74,7 +80,8 @@ with app.app_context():
                                "There are also Polish maces from the high middle ages, an Italian Renaissance "
                                "ceremonial helmet, a Tatar shield from the 17th century and bronze canons forged "
                                "in Lviv in the 1500s and 1600s.",
-                   rate=5, image="https://www.bing.com/images/blob?bcid=qPSfgc76Q9UEag", visible=True)
+                   rate=5, image="https://cdn.thecrazytourist.com/wp-content/"
+                                 "uploads/2018/08/ccimage-shutterstock_1149754769.jpg", visible=True)
     place6 = Place(name="Dominican Church", country="Ukraine", city="Lviv",
                    description="Lviv has more than a hundred churches, but the Baroque Dominican Church to the "
                                "east of Market Square should be a priority. The present temple was completed in 1761, "
@@ -85,7 +92,8 @@ with app.app_context():
                                "a spell as a museum in Soviet times the church has been re-consecrated, and is "
                                "unusual in that you’re allowed to take photographs inside (within reason), and "
                                "because of the high number of weddings that take place here.",
-                   rate=5, image="https://www.bing.com/images/blob?bcid=qJqu-1DpDtUEIQ", visible=True)
+                   rate=5, image="https://cdn.thecrazytourist.com/wp-content/"
+                                 "uploads/2018/08/ccimage-shutterstock_1118954447.jpg", visible=True)
     place7 = Place(name="Armenian Street", country="Ukraine", city="Lviv",
                    description="After the Armenians were forced to flee from the Mongols in the 13th century, "
                                "many settled on Virmenska Street, also home to the Armenian Cathedral. In medieval "
@@ -97,7 +105,8 @@ with app.app_context():
                                "in the wide portals of the houses, which was a common trait of Armenian architecture "
                                "up to the 1700s.",
                    rate=5,
-                   image="https://www.bing.com/images/blob?bcid=qJkU81C9tdUEZg", visible=True)
+                   image="https://cdn.thecrazytourist.com/wp-content/"
+                         "uploads/2018/08/ccimage-shutterstock_650166007.jpg", visible=True)
     place8 = Place(name="High Castle", country="Ukraine", city="Lviv",
                    description="Watching over Lviv from its northeastern fringe is High Castle Hill, the perch for "
                                "the eponymous castle dating to 1250 but dismantled in the 19th century. The hill "
@@ -109,7 +118,8 @@ with app.app_context():
                                "ruin today, and there’s not much left apart from a wall. But the journey is all about "
                                "the view and the vegetation at the top: Come just at sunrise in summer and you may "
                                "have it completely to yourself.",
-                   rate=5, image="https://www.bing.com/images/blob?bcid=qLYRuQNdgtUECA", visible=True)
+                   rate=5, image="https://cdn.thecrazytourist.com/wp-content/"
+                                 "uploads/2018/08/ccimage-shutterstock_1061659757.jpg", visible=True)
     place9 = Place(name="Lychakiv Cemetery", country="Ukraine", city="Lviv",
                    description="Since the 1500s, Lviv’s most prominent figures have been laid to rest at this "
                                "40-hectare cemetery that has now been recognised as a national reserve. Lychakiv "
@@ -120,7 +130,8 @@ with app.app_context():
                                "surgeons and painters. For Poles the cemetery is poignant as the burial place of "
                                "the Lwów Eaglets, young militia members who were killed during "
                                "the Polish-Ukrainian War in 1918-1919.",
-                   rate=5, image="https://www.bing.com/images/blob?bcid=qCpeMg5iKdUEBA", visible=True)
+                   rate=5, image="https://cdn.thecrazytourist.com/wp-content/"
+                                 "uploads/2018/08/ccimage-shutterstock_14336488.jpg", visible=True)
     place10 = Place(name="Museum of Folk Architecture and Rural Life", country="Ukraine", city="Lviv",
                     description="In the same district, on the eastern outskirts you can get a complete snapshot of "
                                 "Ukrainian traditions and rural life without having to stray far from the city. "
@@ -132,7 +143,8 @@ with app.app_context():
                                 "dating to 1792, and the wooden church of St Nicholas from 1763, both brought "
                                 "here in the 1930s.",
                     rate=5,
-                    image="https://www.bing.com/images/blob?bcid=RCs-rl8eD9UEqxcxoNWLuD9SqbotqVTdP.c", visible=True)
+                    image="https://cdn.thecrazytourist.com/wp-content/"
+                          "uploads/2018/08/ccimage-shutterstock_1083255287.jpg", visible=True)
     place11 = Place(name="House of Scientists", country="Ukraine", city="Lviv",
                     description="Once a casino and now an events venue for the Regional Union of Education and "
                                 "Science, the House of Scientists is a shining piece of turn-of-the-century "
@@ -146,7 +158,8 @@ with app.app_context():
                                 "seven other rooms embellished with chandeliers, marble fireplaces, stuccowork and "
                                 "period furniture.",
                     rate=5,
-                    image="https://www.bing.com/images/blob?bcid=RDXy3RK8edUEqxcxoNWLuD9SqbotqVTdPxM", visible=True)
+                    image="https://cdn.thecrazytourist.com/wp-content/"
+                          "uploads/2018/08/ccimage-shutterstock_195532433.jpg", visible=True)
     place12 = Place(name="Chapel of the Boim Family", country="Ukraine", city="Lviv",
                     description="On the eastern edge of Cathedral square there’s a 17th-century Mannerist chapel "
                                 "that has no equivalent in either Ukraine or the rest of Europe. The facade is "
@@ -159,7 +172,8 @@ with app.app_context():
                                 "an octagonal lantern and with 36 panels of sculptures representing "
                                 "prophets, angels, the apostles and Jesus.",
                     rate=5,
-                    image="https://www.bing.com/images/blob?bcid=qOvs31x3n9UEZw", visible=True)
+                    image="https://cdn.thecrazytourist.com/wp-content/"
+                          "uploads/2018/08/ccimage-shutterstock_626739452.jpg", visible=True)
     place13 = Place(name="St George’s Cathedral", country="Ukraine", city="Lviv",
                     description="This 18th-century Catholic cathedral looks out over Lviv from its namesake hill "
                                 "on the west side of the city. It was built over 15 years up to 1760 and its exterior "
@@ -170,7 +184,8 @@ with app.app_context():
                                 "After all that drama the interior is a lot more discreet, but there are some "
                                 "fascinating things to see, like a “wonder-working” icon of Mary from the 1600s, "
                                 "and tombs for some eminent figures of the Ukrainian Greek-Catholic church.",
-                    rate=5, image="https://www.bing.com/images/blob?bcid=qPH5qWCTv9UEDQ", visible=True)
+                    rate=5, image="https://cdn.thecrazytourist.com/wp-content/"
+                                  "uploads/2018/08/ccimage-shutterstock_225185485.jpg", visible=True)
     place14 = Place(name="City Hall", country="Ukraine", city="Lviv",
                     description="The seat of Lviv’s city council is a medley of buildings, the oldest dating to the "
                                 "14th century. The oldest elements are towards the centre, while the western side is "
@@ -180,7 +195,8 @@ with app.app_context():
                                 "easiest way to get your bearings. This is no simple task though, as just to get "
                                 "to the ticket office you have climb 103 steps. And after that you’ve got to tackle "
                                 "another 305 before you come to that vista of the city and its famous hills.",
-                    rate=5, image="https://www.bing.com/images/blob?bcid=qERiaFt7UNUETQ", visible=True)
+                    rate=5, image="https://cdn.thecrazytourist.com/wp-content/"
+                                  "uploads/2018/08/ccimage-shutterstock_298741211.jpg", visible=True)
     place15 = Place(name="Kryivka", country="Ukraine", city="Lviv",
                     description="If you happen to be around Monument to Leopold von Sacher-Masoch, visit this "
                                 "restaurant. Ukrainian cuisine is served at Kryivka. You can always degust tasty "
@@ -192,7 +208,8 @@ with app.app_context():
                                 "You will appreciate affordable prices. Based on the visitors' opinions, "
                                 "the decor is nice.",
                     rate=5,
-                    image="https://i.pinimg.com/originals/6f/a5/e7/6fa5e70bddce0deac435ca68091f5453.jpg", visible=True)
+                    image="https://i.pinimg.com/originals/6f/a5/e7/"
+                          "6fa5e70bddce0deac435ca68091f5453.jpg", visible=True)
 
     db.session.add_all([place1, place2, place3, place4, place5,
                         place6, place7, place8, place9, place10,
