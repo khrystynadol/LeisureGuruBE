@@ -30,6 +30,18 @@ class User(db.Model):
         return "<User: '{}' '{}', email: '{}'>" \
             .format(self.first_name, self.last_name, self.email)
 
+    def as_dict(self):
+        return {p.name: getattr(self, p.name) for p in self.__table__.columns}
+
+    def format(self):
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            # 'birth_date': self.birth_date,
+            'email': self.email,
+        }
+
     def is_authenticated(self) -> bool:
         return True
 
@@ -48,6 +60,9 @@ class Activity(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
+
+    def get_id(self):
+        return self.id
 
 
 class Season(db.Model):
@@ -86,6 +101,9 @@ class Place(db.Model):
             'image': self.image
         }
 
+    def get_id(self):
+        return self.id
+
 
 class PlaceActivity(db.Model):
     __tablename__ = 'place_activity'
@@ -93,6 +111,9 @@ class PlaceActivity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
     activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))
+
+    def get_place_id(self):
+        return self.place_id
 
 
 class PlaceSeason(db.Model):

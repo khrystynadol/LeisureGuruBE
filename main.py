@@ -1,20 +1,25 @@
 from flask import request, flash, abort, jsonify, render_template, url_for
 from flask_login import login_required, current_user, login_user, logout_user, LoginManager  # , UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-# from flask_mail import Mail
+from flask_mail import Message
+from flask_mail import Mail
+
 import re
 import json
-# import os
-# from token import generate_confirmation_token, confirm_token
+import os
+from generate_token import generate_confirmation_token, confirm_token
 # from check_email import send_email
 from forms import UserSchema
 from database.models import *
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
 
 '''
 mail = Mail(app)
@@ -31,6 +36,16 @@ MAIL_PASSWORD = os.environ['LeisureGuru12345']
 
 # mail accounts
 # MAIL_DEFAULT_SENDER = 'from@example.com'
+
+
+def send_email(to, subject, template):
+    msg = Message(
+        subject,
+        recipients=[to],
+        html=template,
+        sender=app.config['MAIL_DEFAULT_SENDER']
+    )
+    mail.send(msg)
 '''
 
 
@@ -199,6 +214,34 @@ def user(user_id):
 # @login_required
 def homepage():
     return json.dumps([p.as_dict() for p in Place.query.all()])
+
+
+@app.route("/filter", methods=['POST'])
+def filtering():
+    if request.method == 'POST':
+        filter_data = request.get_json()
+        if "rate" in filter_data:
+            rate_filter = filter_data["rate"]
+        else:
+            rate_filter = [1, 2, 3, 4, 5]
+        # print("rate_filter", rate_filter)
+
+        activity_filter = []
+        if "activities" in filter_data:
+            activity_filter_list = filter_data["activities"]
+            # print(activity_filter_list)
+            activity_filter = (p.get_id() for p in Activity.query.filter(Activity.name.in_(activity_filter_list)))
+        else:
+            activity_filter = (p.get_id() for p in Activity.query.all())
+
+        # print("activity_filter", activity_filter)
+        place_filter_by_activity = (p.get_place_id() for p
+                                    in PlaceActivity.query.filter(PlaceActivity.activity_id.in_(activity_filter)))
+        # print("place_filter_by_activity:", place_filter_by_activity)
+        # filter1 = filter_data["id"]
+        all_filter = Place.query.filter(Place.id.in_(place_filter_by_activity),
+                                        Place.rate.in_(rate_filter))
+        return json.dumps([p.format() for p in all_filter])
 
 
 if __name__ == "__main__":
