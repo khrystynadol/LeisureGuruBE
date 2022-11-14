@@ -3,29 +3,86 @@ from flask_login import login_required, current_user, login_user, logout_user, L
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail
 import re
+<<<<<<< Updated upstream
 import os
 from token import generate_confirmation_token, confirm_token
 from email import send_email
 from database.models import app, db, User, Place, RegistrationForm
+=======
+import json
+from token import generate_confirmation_token, confirm_token
+from forms import UserSchema
+from database.models import *
+from marshmallow import ValidationError
+from sqlalchemy.exc import IntegrityError
+>>>>>>> Stashed changes
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+<<<<<<< Updated upstream
 mail = Mail(app)
 
+=======
+app.config['SECRET_KEY'] = 'super secret key'
+app.config['SECURITY_PASSWORD_SALT'] = app.config['SECRET_KEY']
+>>>>>>> Stashed changes
 # mail settings
-MAIL_SERVER = 'smtp.gmail.com'
-MAIL_PORT = 465
-MAIL_USE_TLS = False
-MAIL_USE_SSL = True
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
 
 # gmail authentication
-MAIL_USERNAME = os.environ['leisure.guru.ver@gmail.com']
-MAIL_PASSWORD = os.environ['LeisureGuru12345']
+app.config['MAIL_USERNAME'] = 'leisure.guru.ver@gmail.com'
+app.config['MAIL_PASSWORD'] = 'innsblomcwfddjgw'
 
 # mail accounts
+<<<<<<< Updated upstream
 # MAIL_DEFAULT_SENDER = 'from@example.com'
+=======
+app.config['MAIL_DEFAULT_SENDER'] = 'leisure.guru.ver@gmail.com'
+
+mail = Mail(app)
+
+def send_mes(to,subject, url):
+    msg = Message(subject,sender='leisure.guru.ver@gmail.com',recipients=[to])
+    msg.body = f"Please confirm email: {url}"
+    mail.send(msg)
+
+
+
+def error_handler(func):
+    def wrapper(*args, **kwargs):
+        # print("error_handler")
+        try:
+            # result = 0
+            if 0 == len(kwargs):
+                result = func()
+            else:
+                result = func(**kwargs)
+            if result[1] >= 400:
+                return {
+                    "code": result[1],
+                    "message": result[0]
+                }, result[1]
+            else:
+                return result
+        except ValidationError as err:
+            # print(err.messages)
+            return {"code": 412,
+                    "message": err.messages
+                    }, 412
+        except IntegrityError as err:
+            # print(err.args)
+            return {"code": 409,
+                    "message": err.args
+                    }, 409
+
+    wrapper.__name__ = func.__name__
+    return wrapper
+>>>>>>> Stashed changes
 
 
 @login_manager.user_loader
@@ -42,6 +99,7 @@ def home():
     return "Home page :)"
 
 
+<<<<<<< Updated upstream
 # @app.route("/signup", methods=['POST', 'GET'])
 # def signup():
 #     if request.method == 'POST':
@@ -78,8 +136,10 @@ def home():
 #     return "Sign up :)"
 
 
+=======
+>>>>>>> Stashed changes
 @app.route('/confirm/<token>')
-@login_required
+#@login_required
 def confirm_email(token):
     try:
         email_to_check = confirm_token(token)
@@ -87,16 +147,17 @@ def confirm_email(token):
         flash('The confirmation link is invalid or has expired.', 'danger')
 
     user_to_check = User.query.filter_by(email=email_to_check).first_or_404()
-    if user.confirmed:
+    if user_to_check.verification:
         flash('Account already confirmed. Please login.', 'success')
     else:
-        user_to_check.confirmed = True
+        user_to_check.verification = True
         db.session.add(user_to_check)
         db.session.commit()
         flash('You have confirmed your account. Thanks!', 'success')
     return "Confirm email"  # redirect(url_for('main.home'))
 
 
+<<<<<<< Updated upstream
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -129,6 +190,32 @@ def register():
 
                 flash('A confirmation email has been sent via email.', 'success')
             return "Home"  # redirect(url_for("main.home"))
+=======
+@app.route('/registration', methods=['GET', 'POST'])
+def registration():
+    if request.method == 'POST' and request.is_json:
+        user_data = UserSchema().load(request.json)
+        new_user = User(**user_data)
+        find_email = User.query.filter_by(email=new_user.email).first()
+        if find_email is not None:
+            flash("Email is already used", "error")
+        else:
+            db.session.add(new_user)
+            db.session.commit()
+            print({"id": new_user.id,
+                    "email": new_user.email})
+
+            token = generate_confirmation_token(new_user.email)
+            confirm_url = url_for('confirm_email', token=token, _external=True)
+            #html = render_template('activate.html', confirm_url=confirm_url)
+            subject = "Please confirm your email"
+            send_mes(new_user.email,subject, confirm_url)
+        #send_emailqwert(new_user.email, subject, html)
+        login_user(new_user)
+
+        flash('A confirmation email has been sent via email.', 'success')
+        return "Home"
+>>>>>>> Stashed changes
     return "Register"  # render_template('/register', form=form)
 
 
