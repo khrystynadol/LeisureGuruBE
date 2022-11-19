@@ -1,5 +1,5 @@
 from flask import request, flash, abort, jsonify, render_template, url_for
-from flask_login import login_required, current_user, login_user, logout_user, LoginManager  # , UserMixin
+# from flask_login import login_required, current_user, login_user, logout_user, LoginManager  # , UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
 from flask_mail import Mail
@@ -13,40 +13,47 @@ from forms import UserSchema
 from database.models import *
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
+from flask_httpauth import HTTPBasicAuth
+
+auth = HTTPBasicAuth()
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:12345@localhost:5432/{DB_NAME}'
 
+'''
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-
-
 '''
-mail = Mail(app)
 
+app.config['SECRET_KEY'] = 'super secret key'
+app.config['SECURITY_PASSWORD_SALT'] = app.config['SECRET_KEY']
 # mail settings
-MAIL_SERVER = 'smtp.gmail.com'
-MAIL_PORT = 465
-MAIL_USE_TLS = False
-MAIL_USE_SSL = True
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
 
 # gmail authentication
-MAIL_USERNAME = os.environ['leisure.guru.ver@gmail.com']
-MAIL_PASSWORD = os.environ['LeisureGuru12345']
+app.config['MAIL_USERNAME'] = 'leisure.guru.ver@gmail.com'
+app.config['MAIL_PASSWORD'] = 'innsblomcwfddjgw'
 
 # mail accounts
-# MAIL_DEFAULT_SENDER = 'from@example.com'
+app.config['MAIL_DEFAULT_SENDER'] = 'leisure.guru.ver@gmail.com'
+
+mail = Mail(app)
 
 
-def send_email(to, subject, template):
-    msg = Message(
-        subject,
-        recipients=[to],
-        html=template,
-        sender=app.config['MAIL_DEFAULT_SENDER']
-    )
+def send_mes(to, subject, url):
+    msg = Message(subject, sender='leisure.guru.ver@gmail.com', recipients=[to])
+    msg.body = f"Please confirm email: {url}"
     mail.send(msg)
-'''
+
+
+@app.route('/rest-auth')
+@auth.login_required
+def get_response():
+    return jsonify('You are authorized.')
 
 
 def error_handler(func):
@@ -80,6 +87,7 @@ def error_handler(func):
     return wrapper
 
 
+'''
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
@@ -87,6 +95,7 @@ def load_user(user_id):
 
 def load_all_places():
     return Place.query.all()
+'''
 
 
 @app.route("/")
@@ -130,9 +139,7 @@ def signup():
     return "Sign up :)"
 
 
-'''
 @app.route('/confirm/<token>')
-@login_required
 def confirm_email(token):
     try:
         email_to_check = confirm_token(token)
@@ -140,17 +147,17 @@ def confirm_email(token):
         flash('The confirmation link is invalid or has expired.', 'danger')
 
     user_to_check = User.query.filter_by(email=email_to_check).first_or_404()
-    if user.confirmed:
+    if user_to_check.verification:
         flash('Account already confirmed. Please login.', 'success')
     else:
-        user_to_check.confirmed = True
+        user_to_check.verification = True
         db.session.add(user_to_check)
         db.session.commit()
         flash('You have confirmed your account. Thanks!', 'success')
     return "Confirm email"  # redirect(url_for('main.home'))
+
+
 '''
-
-
 @app.route('/registration', methods=['GET', 'POST'])
 @error_handler
 def registration():
@@ -160,11 +167,38 @@ def registration():
         new_user.status = True
         db.session.add(new_user)
         db.session.commit()
-        login_user(new_user)
         return {"id": new_user.id,
                 "email": new_user.email}, 201
         # jsonify(UserSchema().dump(new_user)), 201
     return "Register"  # render_template('/register', form=form)
+'''
+
+
+@app.route('/registration', methods=['GET', 'POST'])
+def registration():
+    if request.method == 'POST' and request.is_json:
+        user_data = UserSchema().load(request.json)
+        new_user = User(**user_data)
+        find_email = User.query.filter_by(email=new_user.email).first()
+        if find_email is not None:
+            return {"message": "Email already exists."}, 405
+        else:
+            db.session.add(new_user)
+            db.session.commit()
+
+            token = generate_confirmation_token(new_user.email)
+            confirm_url = url_for('confirm_email', token=token, _external=True)
+            # html = render_template('activate.html', confirm_url=confirm_url)
+            subject = "Please confirm your email"
+            send_mes(new_user.email, subject, confirm_url)
+            # send_emailqwert(new_user.email, subject, html)
+        # flash('A confirmation email has been sent via email.', 'success')
+        return {"id": new_user.id,
+                "email": new_user.email}, 201
+    else:
+        return {
+            "message": "Incorrect request"
+        }, 404  # render_template('/register', form=form)
 
 
 @app.route("/login", methods=['PUT', 'GET'])
@@ -179,7 +213,6 @@ def login():
             abort(405)
         else:
             user_login.status = True
-            login_user(user_login)
             db.session.commit()
             return {"id": user_login.id,
                     "email": user_login.email}
@@ -187,7 +220,7 @@ def login():
 
 
 @app.route("/profile/<int:user_id>", methods=['GET', 'DELETE', 'POST', 'PUT'])
-@login_required
+# @auth.login_required
 def user(user_id):
     # user_to_work_data = request.get_json()
     user_to_work = User.query.filter_by(id=user_id).first()
@@ -196,13 +229,14 @@ def user(user_id):
         user_to_work.status = False
         # db.session.add(user_to_work)
         db.session.commit()
-        logout_user()
         # db.session.pop('id', None)
         # db.session.pop('email', None)
     elif request.method == 'DELETE' and user_to_work != []:
-        if user_to_work.id == current_user.id:
+        print("Got delete 1", user_id)
+        if user_to_work.id == auth.current_user().id:
             db.session.delete(user_to_work)
             db.session.commit()
+            print("Got delete 2", user_id)
             flash("Success")
         else:
             flash("You try to delete other user")
@@ -216,12 +250,13 @@ def homepage():
     return json.dumps([p.as_dict() for p in Place.query.all()])
 
 
-@app.route("/filter", methods=['POST'])
+@app.route("/filter", methods=['GET'])
 def filtering():
-    if request.method == 'POST':
+    if request.method == 'GET':
         filter_data = request.get_json()
+        rate_filter = []
         if "rate" in filter_data:
-            rate_filter = filter_data["rate"]
+            rate_filter.append(filter_data["rate"])
         else:
             rate_filter = [1, 2, 3, 4, 5]
         # print("rate_filter", rate_filter)
@@ -239,9 +274,15 @@ def filtering():
                                     in PlaceActivity.query.filter(PlaceActivity.activity_id.in_(activity_filter)))
         # print("place_filter_by_activity:", place_filter_by_activity)
         # filter1 = filter_data["id"]
-        all_filter = Place.query.filter(Place.id.in_(place_filter_by_activity),
-                                        Place.rate.in_(rate_filter))
-        return json.dumps([p.format() for p in all_filter])
+        if "search_box" in filter_data:
+            search_filter = filter_data["search_box"]
+            all_filter = Place.query.filter(Place.id.in_(place_filter_by_activity),
+                                            Place.rate.in_(rate_filter),
+                                            Place.name.like(f"%{search_filter}%"))
+        else:
+            all_filter = Place.query.filter(Place.id.in_(place_filter_by_activity),
+                                            Place.rate.in_(rate_filter))
+        return json.dumps([p.format() for p in all_filter]), 201
 
 
 if __name__ == "__main__":
