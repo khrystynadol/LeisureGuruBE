@@ -110,7 +110,7 @@ def signup():
             data_user = request.get_json()
             new_user = User(first_name=data_user['firstName'], last_name=data_user['lastName'],
                             email=data_user['email'], birth_date=data_user['date'],
-                            password1=generate_password_hash(data_user['password']))
+                            password=generate_password_hash(data_user['password']))
             find_email = User.query.filter_by(email=new_user.email).first()
 
             if find_email is not None:
@@ -125,7 +125,7 @@ def signup():
             elif not re.match(r'[A-Za-z]+', new_user.last_name):
                 flash("Incorrect last name")
                 abort(400)
-            elif not new_user.first_name or not new_user.last_name or not new_user.password1 or not new_user.email \
+            elif not new_user.first_name or not new_user.last_name or not new_user.password or not new_user.email \
                     or not new_user.birth_date:
                 flash("All fields should be entered")
                 abort(400)
@@ -209,7 +209,7 @@ def login():
 
         if user_login is None:
             abort(405)
-        elif not check_password_hash(user_login.password1, login_data['password']):
+        elif not check_password_hash(user_login.password, login_data['password']):
             abort(405)
         else:
             user_login.status = True

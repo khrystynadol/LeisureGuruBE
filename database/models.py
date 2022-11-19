@@ -22,7 +22,7 @@ class User(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     birth_date = db.Column(db.Date, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
-    password1 = db.Column(db.String(200), nullable=False)
+    password = db.Column(db.String(200), nullable=False)
     verification = db.Column(db.Boolean, default=False)
     status = db.Column(db.Boolean, default=True)
 

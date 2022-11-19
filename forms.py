@@ -16,7 +16,7 @@ class UserSchema(Schema):
     birth_date = fields.Date(format='%Y-%m-%d',
                              validate=lambda x: x <= datetime.date.today(),
                              required=True)
-    password1 = fields.Function(  # validate=validate.Length(min=5, max=15),
+    password = fields.Function(  # validate=validate.Length(min=5, max=15),
                                deserialize=lambda password: generate_password_hash(password),
                                load_only=True, required=True
                                )
