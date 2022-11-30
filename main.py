@@ -14,6 +14,7 @@ from database.models import *
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 from flask_httpauth import HTTPBasicAuth
+from functools import wraps
 
 auth = HTTPBasicAuth()
 
@@ -42,6 +43,46 @@ app.config['MAIL_PASSWORD'] = 'innsblomcwfddjgw'
 app.config['MAIL_DEFAULT_SENDER'] = 'leisure.guru.ver@gmail.com'
 
 mail = Mail(app)
+
+
+@auth.verify_password
+def verify_password(email, password):
+    print("email: " + email + ", password: " + password)
+    user_to_verify = User.query.filter_by(email=email).first()
+    if user_to_verify is not None and check_password_hash(user_to_verify.password, password):
+        print("email: " + email + ", password: " + password)
+        return True
+    else:
+        return False
+
+
+@auth.error_handler
+def auth_error_handler(status):
+    message = ""
+    if status == 401:
+        message = "Wrong email or password"
+    if status == 403:
+        message = "Access denied"
+    return {"code": status, "message": message}, status
+
+
+def authenticate():
+    message = {'message': "Authenticate."}
+    resp = jsonify(message)
+
+    resp.status_code = 401
+    resp.headers['WWW-Authenticate'] = 'Basic realm="Main"'
+    return resp
+
+
+def requires_authorization(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth_b = request.authorization
+        if not auth_b or not verify_password(auth_b.email, auth_b.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
 
 
 def send_mes(to, subject, url):
@@ -212,18 +253,31 @@ def login():
         elif not check_password_hash(user_login.password, login_data['password']):
             abort(405)
         else:
-            user_login.status = True
-            db.session.commit()
-            return {"id": user_login.id,
-                    "email": user_login.email}
+            if verify_password(login_data['email'], login_data['password']):
+                user_login.status = True
+                db.session.commit()
+                app.config['USERNAME'] = login_data['email']
+                app.config['PASSWORD'] = login_data['password']
+                return {"id": user_login.id,
+                        "email": user_login.email}
+            else:
+                return {
+                    "message": "You need to authorize!"
+                }, 408
     return "Login :)"
 
 
 @app.route("/profile/<int:user_id>", methods=['GET', 'DELETE', 'POST', 'PUT'])
-# @auth.login_required
+@auth.login_required
 def user(user_id):
-    # user_to_work_data = request.get_json()
     user_to_work = User.query.filter_by(id=user_id).first()
+
+    current_user = auth.current_user()
+    print(user_id, current_user.id)
+    if current_user.id != int(user_id):
+        return "Access denied", 403
+
+    # user_to_work_data = request.get_json()
     if request.method == 'GET' and user_to_work != []:
         print("Got", user_id)
         user_to_work.status = False
@@ -233,7 +287,7 @@ def user(user_id):
         # db.session.pop('email', None)
     elif request.method == 'DELETE' and user_to_work != []:
         print("Got delete 1", user_id)
-        if user_to_work.id == auth.current_user().id:
+        if user_to_work.id == current_user.id:
             db.session.delete(user_to_work)
             db.session.commit()
             print("Got delete 2", user_id)
@@ -245,42 +299,53 @@ def user(user_id):
 
 
 @app.route("/homepage", methods=['GET'])
-# @login_required
 def homepage():
     return json.dumps([p.as_dict() for p in Place.query.all()])
 
 
-@app.route("/filter", methods=['GET'])
-def filtering():
+@app.route("/activities", methods=['GET'])
+def activities():
     if request.method == 'GET':
+        return json.dumps([p.as_dict() for p in Activity.query.all()])
+
+
+@app.route("/filter", methods=['POST'])
+@auth.login_required
+def filtering():
+    if request.method == 'POST':
         filter_data = request.get_json()
         rate_filter = []
-        if "rate" in filter_data:
+        if "rate" in filter_data and filter_data["rate"] != []:
             rate_filter.append(filter_data["rate"])
+            min_rate = filter_data["rate"]
+            for i in range(1, 6):
+                if i > min_rate:
+                    rate_filter.append(i)
         else:
             rate_filter = [1, 2, 3, 4, 5]
         # print("rate_filter", rate_filter)
 
         activity_filter = []
-        if "activities" in filter_data:
-            activity_filter_list = filter_data["activities"]
-            # print(activity_filter_list)
-            activity_filter = (p.get_id() for p in Activity.query.filter(Activity.name.in_(activity_filter_list)))
+        if "activities" in filter_data and filter_data["activities"] != []:
+            activity_filter = filter_data["activities"]
         else:
             activity_filter = (p.get_id() for p in Activity.query.all())
 
+        # place_filter_by_activity = (p.get_id() for p in
+        #                             PlaceActivity.query.filter(PlaceActivity.activity_id.in_(activity_filter)))
+        place_filter_res = (p.get_place_id() for p in
+                            PlaceActivity.query.filter(PlaceActivity.activity_id.in_(activity_filter)))
+
         # print("activity_filter", activity_filter)
-        place_filter_by_activity = (p.get_place_id() for p
-                                    in PlaceActivity.query.filter(PlaceActivity.activity_id.in_(activity_filter)))
         # print("place_filter_by_activity:", place_filter_by_activity)
         # filter1 = filter_data["id"]
         if "search_box" in filter_data:
             search_filter = filter_data["search_box"]
-            all_filter = Place.query.filter(Place.id.in_(place_filter_by_activity),
+            all_filter = Place.query.filter(Place.id.in_(place_filter_res),
                                             Place.rate.in_(rate_filter),
                                             Place.name.like(f"%{search_filter}%"))
         else:
-            all_filter = Place.query.filter(Place.id.in_(place_filter_by_activity),
+            all_filter = Place.query.filter(Place.id.in_(place_filter_res),
                                             Place.rate.in_(rate_filter))
         return json.dumps([p.format() for p in all_filter]), 201
 

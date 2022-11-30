@@ -64,6 +64,9 @@ class Activity(db.Model):
     def get_id(self):
         return self.id
 
+    def as_dict(self):
+        return {p.name: getattr(self, p.name) for p in self.__table__.columns}
+
 
 class Season(db.Model):
     __tablename__ = 'season'
@@ -114,6 +117,9 @@ class PlaceActivity(db.Model):
 
     def get_place_id(self):
         return self.place_id
+
+    def get_id(self):
+        return self.id
 
 
 class PlaceSeason(db.Model):
