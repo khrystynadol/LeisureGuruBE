@@ -46,6 +46,7 @@ def upgrade() -> None:
     sa.Column('birth_date', sa.Date(), nullable=False),
     sa.Column('email', sa.String(length=50), nullable=False),
     sa.Column('password', sa.String(length=200), nullable=False),
+    sa.Column('photo', sa.String(length=250), nullable=True),
     sa.Column('verification', sa.Boolean(), nullable=True),
     sa.Column('status', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
