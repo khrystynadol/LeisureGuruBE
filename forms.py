@@ -12,11 +12,11 @@ class UserSchema(Schema):
     last_name = fields.Str(validate=[validate.Regexp("[a-zA-z]*$"),
                            validate.Length(min=0, max=45)],
                            required=True)
-    email = fields.Email(required=True)
+    email = fields.Email(unique=True, required=True)
     birth_date = fields.Date(format='%Y-%m-%d',
                              validate=lambda x: x <= datetime.date.today(),
                              required=True)
     password = fields.Function(  # validate=validate.Length(min=5, max=15),
                                deserialize=lambda password: generate_password_hash(password),
-                               load_only=True, required=True
-                               )
+                               load_only=True, required=True)
+    photo = fields.Str(validate=validate.Length(min=0, max=250), required=False)

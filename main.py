@@ -1,4 +1,4 @@
-from flask import request, flash, abort, jsonify, render_template, url_for
+from flask import request, flash, abort, jsonify, render_template, url_for, make_response
 # from flask_login import login_required, current_user, login_user, logout_user, LoginManager  # , UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
@@ -51,7 +51,7 @@ def verify_password(email, password):
     user_to_verify = User.query.filter_by(email=email).first()
     if user_to_verify is not None and check_password_hash(user_to_verify.password, password):
         print("email: " + email + ", password: " + password)
-        return True
+        return user_to_verify
     else:
         return False
 
@@ -75,14 +75,14 @@ def authenticate():
     return resp
 
 
-def requires_authorization(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth_b = request.authorization
-        if not auth_b or not verify_password(auth_b.email, auth_b.password):
-            return authenticate()
-        return f(*args, **kwargs)
-    return decorated
+# def login_required(f):
+#     @wraps(f)
+#     def decorated(*args, **kwargs):
+#         auth_b = request.authorization
+#         if not auth_b or not verify_password(auth_b.email, auth_b.password):
+#             return authenticate()
+#         return f(*args, **kwargs)
+#     return decorated
 
 
 def send_mes(to, subject, url):
@@ -267,17 +267,15 @@ def login():
     return "Login :)"
 
 
-@app.route("/profile/<int:user_id>", methods=['GET', 'DELETE', 'POST', 'PUT'])
+@app.route("/profile/logout/<int:user_id>", methods=['GET'])
 @auth.login_required
-def user(user_id):
+def logout(user_id):
     user_to_work = User.query.filter_by(id=user_id).first()
-
     current_user = auth.current_user()
     print(user_id, current_user.id)
     if current_user.id != int(user_id):
         return "Access denied", 403
 
-    # user_to_work_data = request.get_json()
     if request.method == 'GET' and user_to_work != []:
         print("Got", user_id)
         user_to_work.status = False
@@ -285,17 +283,29 @@ def user(user_id):
         db.session.commit()
         # db.session.pop('id', None)
         # db.session.pop('email', None)
+        return 200
+
+
+@app.route("/profile/<int:user_id>", methods=['GET', 'DELETE', 'POST', 'PUT'])
+@auth.login_required
+def user(user_id):
+    user_to_work = User.query.filter_by(id=user_id).first()
+    current_user = auth.current_user()
+    print(user_id, current_user.id)
+    if current_user.id != int(user_id):
+        return "Access denied", 403
+
+    # user_to_work_data = request.get_json()
+    if request.method == 'GET' and user_to_work != []:
+        return jsonify(UserSchema().dump(user_to_work)), 200
     elif request.method == 'DELETE' and user_to_work != []:
         print("Got delete 1", user_id)
-        if user_to_work.id == current_user.id:
-            db.session.delete(user_to_work)
-            db.session.commit()
-            print("Got delete 2", user_id)
-            flash("Success")
-        else:
-            flash("You try to delete other user")
-            abort(404)
-    return "User"
+        db.session.delete(user_to_work)
+        db.session.commit()
+        response = make_response()
+        response.status_code = 200
+        return response
+    return "User", 404
 
 
 @app.route("/homepage", methods=['GET'])

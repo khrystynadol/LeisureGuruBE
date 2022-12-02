@@ -23,6 +23,7 @@ class User(db.Model):
     birth_date = db.Column(db.Date, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    photo = db.Column(db.String(250), nullable=False)
     verification = db.Column(db.Boolean, default=False)
     status = db.Column(db.Boolean, default=True)
 
