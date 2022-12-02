@@ -222,7 +222,7 @@ def registration():
         new_user = User(**user_data)
         find_email = User.query.filter_by(email=new_user.email).first()
         if find_email is not None:
-            return {"message": "Email already exists "}, 405
+            return {"message": "Email already exists ... "}, 405
         else:
             db.session.add(new_user)
             db.session.commit()
