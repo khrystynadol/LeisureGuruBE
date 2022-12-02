@@ -19,7 +19,7 @@ from functools import wraps
 auth = HTTPBasicAuth()
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:12345@localhost:5432/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:leisuregurube@localhost:5432/{DB_NAME}'
 
 '''
 login_manager = LoginManager()
@@ -51,7 +51,7 @@ def verify_password(email, password):
     user_to_verify = User.query.filter_by(email=email).first()
     if user_to_verify is not None and check_password_hash(user_to_verify.password, password):
         print("email: " + email + ", password: " + password)
-        return True
+        return user_to_verify
     else:
         return False
 
@@ -222,7 +222,7 @@ def registration():
         new_user = User(**user_data)
         find_email = User.query.filter_by(email=new_user.email).first()
         if find_email is not None:
-            return {"message": "Email already exists."}, 405
+            return {"message": "Email already exists "}, 405
         else:
             db.session.add(new_user)
             db.session.commit()
