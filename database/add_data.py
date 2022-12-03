@@ -1,6 +1,7 @@
 from models import app, db, Place, Season, Activity, PlaceActivity, PlaceSeason  # , User
 
 with app.app_context():
+
     season1 = Season(name="winter")
     season2 = Season(name="spring")
     season3 = Season(name="summer")
