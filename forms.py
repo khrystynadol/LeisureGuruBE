@@ -19,4 +19,4 @@ class UserSchema(Schema):
     password = fields.Function(  # validate=validate.Length(min=5, max=15),
                                deserialize=lambda password: generate_password_hash(password),
                                load_only=True, required=True)
-    photo = fields.Str(validate=validate.Length(min=0, max=250), required=False)
+    photo = fields.Str(validate=validate.Length(min=0, max=500), required=False)

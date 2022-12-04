@@ -23,7 +23,7 @@ class User(db.Model):
     birth_date = db.Column(db.Date, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
-    photo = db.Column(db.String(250), nullable=False)
+    photo = db.Column(db.String(500), nullable=False)
     verification = db.Column(db.Boolean, default=False)
     status = db.Column(db.Boolean, default=True)
 
@@ -86,9 +86,9 @@ class Place(db.Model):
     # street = db.Column(db.String(50), nullable=False)
     # house = db.Column(db.Integer, nullable=False)
     # flat = db.Column(db.Integer, nullable=True)
-    description = db.Column(db.String(1000), nullable=False)
+    description = db.Column(db.String(2000), nullable=False)
     rate = db.Column(db.Integer, nullable=False)
-    image = db.Column(db.String(250), nullable=False)
+    image = db.Column(db.String(500), nullable=False)
     visible = db.Column(db.Boolean, default=False)
 
     def as_dict(self):
