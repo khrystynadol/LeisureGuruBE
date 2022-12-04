@@ -24,10 +24,10 @@ with app.app_context():
     activity5 = Activity(name="Cycling")
     activity6 = Activity(name="Swimming")
     activity7 = Activity(name="Eating out")
-    activity8 = Activity(name="Rafting")
+    # activity8 = Activity(name="Rafting")
     db.session.add_all([season1, season2, season3, season4,
                         activity1, activity2, activity3, activity4, activity5,
-                        activity6, activity7, activity8,
+                        activity6, activity7,
                         user_1, user_2])
     db.session.commit()
 
@@ -293,7 +293,11 @@ with app.app_context():
                     image="https://1.bp.blogspot.com/-fjWHP2rB7iQ/VVnzr4N0d7I/AAAAAAAAAbw/wvrVVrPcZ4o/s1600/2685.jpg",
                     visible=True)
     place23 = Place(name="Bukovel Bike Park", country="Ukraine", city="Bukovel",
-                    description="Routes of varying complexity level with springboards, narrow crossings and natural obstacles in the wild forest: a unique enviromnent for everyone willing to improve their mountain bike skills. Today, our bike park is the only place in Ukraine that is fully prepared for extreme downhill. At the moment we have 2 slopes open: 'blue' for beginner riders and 'black' route for pros.",
+                    description="Routes of varying complexity level with springboards, narrow crossings and natural "
+                                "obstacles in the wild forest: a unique enviromnent for everyone willing to improve "
+                                "their mountain bike skills. Today, our bike park is the only place in Ukraine that "
+                                "is fully prepared for extreme downhill. At the moment we have 2 slopes open: 'blue' "
+                                "for beginner riders and 'black' route for pros.",
                     rate=5,
                     image="https://i.ytimg.com/vi/IerV_awZ7Fc/maxresdefault.jpg",
                     visible=True)
@@ -329,6 +333,15 @@ with app.app_context():
                     rate=5,
                     image="https://skyta.com.ua/trash/statica/0/f76a65b24818f95a2525ba0be8729865_600x1000.jpg",
                     visible=True)
+    place27 = Place(name="SKA Velotrek", country="Ukraine", city="Lviv",
+                    description="Track and field arena with bicycle track (better known as SKA Velotrek) is a sports "
+                                "facility in Lviv that specializes in cycling and track and field competitions. It is "
+                                "the only indoor cycling track in Ukraine. Located on the street Kleparivska, 39a. "
+                                "Opened in 1980. It is part of the educational and sports base of summer sports of "
+                                "the IOU.",
+                    rate=4,
+                    image="https://internet-bilet.ua/images/room_header_photo/size3/hph_1487841574_58aea9265efed.jpg",
+                    visible=True)
 
     db.session.add_all([place1, place2, place3, place4, place5,
                         place6, place7, place8, place9, place10,
@@ -336,7 +349,7 @@ with app.app_context():
     db.session.commit()
     db.session.add_all([place16, place17, place18, place19, place20,
                         place21, place22, place23, place24, place25,
-                        place26])
+                        place26, place27])
     db.session.commit()
 
     place_season1 = PlaceSeason(place_id=place1.id, season_id=season1.id)
@@ -437,9 +450,11 @@ with app.app_context():
     place_activity21 = PlaceActivity(place_id=place21.id, activity_id=activity2.id)
     place_activity22 = PlaceActivity(place_id=place22.id, activity_id=activity2.id)
     place_activity23 = PlaceActivity(place_id=place23.id, activity_id=activity3.id)
+    place_activity23_a = PlaceActivity(place_id=place23.id, activity_id=activity5.id)
     place_activity24 = PlaceActivity(place_id=place24.id, activity_id=activity3.id)
     place_activity25 = PlaceActivity(place_id=place25.id, activity_id=activity3.id)
-    place_activity26 = PlaceActivity(place_id=place26.id, activity_id=activity8.id)
+    place_activity26 = PlaceActivity(place_id=place26.id, activity_id=activity4.id)
+    place_activity27 = PlaceActivity(place_id=place27.id, activity_id=activity5.id)
     # activity1 = Activity(name="Sightseeing")
     # activity2 = Activity(name="Hiking")
     # activity3 = Activity(name="Mountain biking")
@@ -464,5 +479,5 @@ with app.app_context():
                         place_activity11, place_activity12, place_activity13, place_activity14, place_activity15,
                         place_activity16, place_activity17, place_activity18, place_activity19, place_activity20,
                         place_activity21, place_activity22, place_activity23, place_activity24, place_activity25,
-                        place_activity26])
+                        place_activity26, place_activity23_a])
     db.session.commit()
