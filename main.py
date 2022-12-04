@@ -1,4 +1,4 @@
-from flask import request, flash, abort, jsonify, render_template, url_for
+from flask import request, flash, abort, jsonify, render_template, url_for, make_response
 # from flask_login import login_required, current_user, login_user, logout_user, LoginManager  # , UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
@@ -19,7 +19,7 @@ from functools import wraps
 auth = HTTPBasicAuth()
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:leisuregurube@localhost:5432/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:12345@localhost:5432/{DB_NAME}'
 
 '''
 login_manager = LoginManager()
@@ -75,14 +75,14 @@ def authenticate():
     return resp
 
 
-def requires_authorization(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth_b = request.authorization
-        if not auth_b or not verify_password(auth_b.email, auth_b.password):
-            return authenticate()
-        return f(*args, **kwargs)
-    return decorated
+# def login_required(f):
+#     @wraps(f)
+#     def decorated(*args, **kwargs):
+#         auth_b = request.authorization
+#         if not auth_b or not verify_password(auth_b.email, auth_b.password):
+#             return authenticate()
+#         return f(*args, **kwargs)
+#     return decorated
 
 
 def send_mes(to, subject, url):
@@ -94,7 +94,8 @@ def send_mes(to, subject, url):
 @app.route('/rest-auth')
 @auth.login_required
 def get_response():
-    return jsonify('You are authorized.')
+    return {'code': 200,
+            'message': 'You are authorized.'}, 200
 
 
 def error_handler(func):
@@ -106,7 +107,7 @@ def error_handler(func):
                 result = func()
             else:
                 result = func(**kwargs)
-            if result[1] >= 400:
+            if result.__class__ == tuple and result[1] >= 400:
                 return {
                     "code": result[1],
                     "message": result[0]
@@ -128,56 +129,47 @@ def error_handler(func):
     return wrapper
 
 
-'''
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)
-
-
-def load_all_places():
-    return Place.query.all()
-'''
-
-
 @app.route("/")
 def home():
     return "Home page :)"
 
 
-@app.route("/register", methods=['POST', 'GET'])
-def signup():
-    if request.method == 'POST':
-        if request.is_json:
-            data_user = request.get_json()
-            new_user = User(first_name=data_user['firstName'], last_name=data_user['lastName'],
-                            email=data_user['email'], birth_date=data_user['date'],
-                            password=generate_password_hash(data_user['password']))
-            find_email = User.query.filter_by(email=new_user.email).first()
-
-            if find_email is not None:
-                flash("Email is already used", "error")
-                abort(400)
-            elif not re.match(r'[^@]+@[^@]+\.[^@]+', new_user.email):
-                flash("Incorrect email")
-                abort(400)
-            elif not re.match(r'[A-Za-z]+', new_user.first_name):
-                flash("Incorrect first name")
-                abort(400)
-            elif not re.match(r'[A-Za-z]+', new_user.last_name):
-                flash("Incorrect last name")
-                abort(400)
-            elif not new_user.first_name or not new_user.last_name or not new_user.password or not new_user.email \
-                    or not new_user.birth_date:
-                flash("All fields should be entered")
-                abort(400)
-            else:
-                db.session.add(new_user)
-                db.session.commit()
-                return {"id": new_user.id,
-                        "email": new_user.email}
-        else:
-            abort(400)
-    return "Sign up :)"
+# @app.route("/register", methods=['POST', 'GET'])
+# def signup():
+#     if request.method == 'POST':
+#         if request.is_json:
+#             data_user = request.get_json()
+#             new_user = User(first_name=data_user['firstName'], last_name=data_user['lastName'],
+#                             email=data_user['email'], birth_date=data_user['date'],
+#                             password=generate_password_hash(data_user['password']))
+#             find_email = User.query.filter_by(email=new_user.email).first()
+#
+#             if find_email is not None:
+#                 flash("Email is already used", "error")
+#                 abort(400)
+#             elif not re.match(r'[^@]+@[^@]+\.[^@]+', new_user.email):
+#                 flash("Incorrect email")
+#                 abort(400)
+#             elif not re.match(r'[A-Za-z]+', new_user.first_name):
+#                 flash("Incorrect first name")
+#                 abort(400)
+#             elif not re.match(r'[A-Za-z]+', new_user.last_name):
+#                 flash("Incorrect last name")
+#                 abort(400)
+#             elif not new_user.first_name or not new_user.last_name or not new_user.password or not new_user.email \
+#                     or not new_user.birth_date:
+#                 flash("All fields should be entered")
+#                 abort(400)
+#             else:
+#                 db.session.add(new_user)
+#                 db.session.commit()
+#                 return {"id": new_user.id,
+#                         "email": new_user.email}
+#         else:
+#             return {"code": 400,
+#                     "message": "Not json format"}, 400
+#     else:
+#         return "Sign up :)"
 
 
 @app.route('/confirm/<token>')
@@ -216,28 +208,27 @@ def registration():
 
 
 @app.route('/registration', methods=['GET', 'POST'])
+@error_handler
 def registration():
     if request.method == 'POST' and request.is_json:
         user_data = UserSchema().load(request.json)
         new_user = User(**user_data)
         find_email = User.query.filter_by(email=new_user.email).first()
-        if find_email is not None:
-            return {"message": "Email already exists ... "}, 405
-        else:
-            db.session.add(new_user)
-            db.session.commit()
+        db.session.add(new_user)
+        db.session.commit()
 
-            token = generate_confirmation_token(new_user.email)
-            confirm_url = url_for('confirm_email', token=token, _external=True)
-            # html = render_template('activate.html', confirm_url=confirm_url)
-            subject = "Please confirm your email"
-            send_mes(new_user.email, subject, confirm_url)
-            # send_emailqwert(new_user.email, subject, html)
+        token = generate_confirmation_token(new_user.email)
+        confirm_url = url_for('confirm_email', token=token, _external=True)
+        # html = render_template('activate.html', confirm_url=confirm_url)
+        subject = "Please confirm your email"
+        send_mes(new_user.email, subject, confirm_url)
+        # send_emailqwert(new_user.email, subject, html)
         # flash('A confirmation email has been sent via email.', 'success')
         return {"id": new_user.id,
                 "email": new_user.email}, 201
     else:
         return {
+            "code": 404,
             "message": "Incorrect request"
         }, 404  # render_template('/register', form=form)
 
@@ -247,11 +238,16 @@ def login():
     if request.method == 'PUT':
         login_data = request.get_json()
         user_login = User.query.filter_by(email=login_data['email']).first()
-
         if user_login is None:
-            abort(405)
+            return {
+                       "code": 404,
+                       "message": "User not found"
+                   }, 404
         elif not check_password_hash(user_login.password, login_data['password']):
-            abort(405)
+            return {
+                       "code": 404,
+                       "message": "Incorrect password"
+                   }, 404
         else:
             if verify_password(login_data['email'], login_data['password']):
                 user_login.status = True
@@ -259,25 +255,27 @@ def login():
                 app.config['USERNAME'] = login_data['email']
                 app.config['PASSWORD'] = login_data['password']
                 return {"id": user_login.id,
-                        "email": user_login.email}
+                        "email": user_login.email}, 200
             else:
                 return {
+                    "code": 408,
                     "message": "You need to authorize!"
                 }, 408
-    return "Login :)"
+    else:
+        return {"code": 404,
+                "message": "Incorrect request"}, 404
 
 
-@app.route("/profile/<int:user_id>", methods=['GET', 'DELETE', 'POST', 'PUT'])
+@app.route("/profile/logout/<int:user_id>", methods=['GET'])
 @auth.login_required
-def user(user_id):
+def logout(user_id):
     user_to_work = User.query.filter_by(id=user_id).first()
-
     current_user = auth.current_user()
     print(user_id, current_user.id)
     if current_user.id != int(user_id):
-        return "Access denied", 403
+        return {"code": 403,
+                "message": "Access denied"}, 403
 
-    # user_to_work_data = request.get_json()
     if request.method == 'GET' and user_to_work != []:
         print("Got", user_id)
         user_to_work.status = False
@@ -285,28 +283,47 @@ def user(user_id):
         db.session.commit()
         # db.session.pop('id', None)
         # db.session.pop('email', None)
+        response = make_response()
+        response.status_code = 200
+        return response
+    else:
+        return {"code": 404,
+                "message": "Incorrect request"}, 404
+
+@app.route("/profile/<int:user_id>", methods=['GET', 'DELETE', 'POST', 'PUT'])
+@auth.login_required
+def user(user_id):
+    user_to_work = User.query.filter_by(id=user_id).first()
+    current_user = auth.current_user()
+    print(user_id, current_user.id)
+    if current_user.id != int(user_id):
+        return {"code": 403,
+                "message": "Access denied"}, 403
+
+    # user_to_work_data = request.get_json()
+    if request.method == 'GET' and user_to_work != []:
+        return jsonify(UserSchema().dump(user_to_work)), 200
     elif request.method == 'DELETE' and user_to_work != []:
         print("Got delete 1", user_id)
-        if user_to_work.id == current_user.id:
-            db.session.delete(user_to_work)
-            db.session.commit()
-            print("Got delete 2", user_id)
-            flash("Success")
-        else:
-            flash("You try to delete other user")
-            abort(404)
-    return "User"
+        db.session.delete(user_to_work)
+        db.session.commit()
+        response = make_response()
+        response.status_code = 200
+        return response
+    else:
+        return {"code": 404,
+                "message": "Incorrect request"}, 404
 
 
 @app.route("/homepage", methods=['GET'])
 def homepage():
-    return json.dumps([p.as_dict() for p in Place.query.all()])
+    return json.dumps([p.as_dict() for p in Place.query.all()]), 200
 
 
 @app.route("/activities", methods=['GET'])
 def activities():
     if request.method == 'GET':
-        return json.dumps([p.as_dict() for p in Activity.query.all()])
+        return json.dumps([p.as_dict() for p in Activity.query.all()]), 200
 
 
 @app.route("/filter", methods=['POST'])
@@ -347,7 +364,7 @@ def filtering():
         else:
             all_filter = Place.query.filter(Place.id.in_(place_filter_res),
                                             Place.rate.in_(rate_filter))
-        return json.dumps([p.format() for p in all_filter]), 201
+        return json.dumps([p.format() for p in all_filter]), 200
 
 
 if __name__ == "__main__":
