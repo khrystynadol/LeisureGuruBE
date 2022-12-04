@@ -117,7 +117,8 @@ def error_handler(func):
         except ValidationError as err:
             # print(err.messages)
             return {"code": 412,
-                    "message": err.messages
+                    "message": str(
+                        err.messages_dict).replace('{', '').replace('}', '').replace('[', '').replace(']', '')
                     }, 412
         except IntegrityError as err:
             # print(err.args)
@@ -289,6 +290,7 @@ def logout(user_id):
     else:
         return {"code": 404,
                 "message": "Incorrect request"}, 404
+
 
 @app.route("/profile/<int:user_id>", methods=['GET', 'DELETE', 'POST', 'PUT'])
 @auth.login_required
