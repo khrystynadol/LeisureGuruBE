@@ -122,7 +122,7 @@ def error_handler(func):
         except IntegrityError as err:
             # print(err.args)
             return {"code": 409,
-                    "message": err.args
+                    "message": "Email is not unique"
                     }, 409
 
     wrapper.__name__ = func.__name__

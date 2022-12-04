@@ -28,9 +28,9 @@ def upgrade() -> None:
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('country', sa.String(length=25), nullable=False),
     sa.Column('city', sa.String(length=25), nullable=True),
-    sa.Column('description', sa.String(length=1000), nullable=False),
+    sa.Column('description', sa.String(length=2000), nullable=False),
     sa.Column('rate', sa.Integer(), nullable=False),
-    sa.Column('image', sa.String(length=250), nullable=False),
+    sa.Column('image', sa.String(length=500), nullable=False),
     sa.Column('visible', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
@@ -46,7 +46,7 @@ def upgrade() -> None:
     sa.Column('birth_date', sa.Date(), nullable=False),
     sa.Column('email', sa.String(length=50), nullable=False),
     sa.Column('password', sa.String(length=200), nullable=False),
-    sa.Column('photo', sa.String(length=250), nullable=True),
+    sa.Column('photo', sa.String(length=500), nullable=True),
     sa.Column('verification', sa.Boolean(), nullable=True),
     sa.Column('status', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
