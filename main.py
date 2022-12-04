@@ -19,7 +19,7 @@ from functools import wraps
 auth = HTTPBasicAuth()
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:12345@localhost:5432/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:leisuregurube@localhost:5432/{DB_NAME}'
 
 '''
 login_manager = LoginManager()
@@ -117,12 +117,12 @@ def error_handler(func):
         except ValidationError as err:
             # print(err.messages)
             return {"code": 412,
-                    "message": err.messages
+                    "message": str(err.messages_dict).replace('{', '').replace('}', '').replace('[', '').replace(']', '')
                     }, 412
         except IntegrityError as err:
             # print(err.args)
             return {"code": 409,
-                    "message": err.args
+                    "message": "This eamil alredy exists"
                     }, 409
 
     wrapper.__name__ = func.__name__
