@@ -21,3 +21,7 @@ class UserSchema(Schema):
                                load_only=True, required=True)
     photo = fields.Str(validate=validate.Length(min=0, max=500), required=False)
     verification = fields.Boolean(required=False)
+
+
+class PlaceSchema(Schema):
+    id = fields.Integer(validate=validate.Range(min=0))
