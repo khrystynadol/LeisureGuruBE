@@ -3,18 +3,14 @@ from flask import request, flash, abort, jsonify, render_template, url_for, make
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
 from flask_mail import Mail
-
-import re
+import psycopg2
 import json
-import os
 from generate_token import generate_confirmation_token, confirm_token
-# from check_email import send_email
 from forms import UserSchema
 from database.models import *
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 from flask_httpauth import HTTPBasicAuth
-from functools import wraps
 
 auth = HTTPBasicAuth()
 
@@ -359,14 +355,61 @@ def filtering():
         # print("place_filter_by_activity:", place_filter_by_activity)
         # filter1 = filter_data["id"]
         if "search_box" in filter_data:
+            conn = psycopg2.connect(
+                database=DB_NAME,
+                user='postgres',
+                password='12345',
+                host='localhost',
+                port='5432'
+            )
+            cursor = conn.cursor()
             search_filter = filter_data["search_box"]
-            all_filter = Place.query.filter(Place.id.in_(place_filter_res),
-                                            Place.rate.in_(rate_filter),
-                                            Place.name.like(f"%{search_filter}%"))
+            search_filter_1 = (filter_data["search_box"]).lower().capitalize()
+            like_pattern = '%{}%'.format(search_filter)
+            like_pattern_1 = '%{}%'.format(search_filter_1)
+            cursor.execute('SELECT * FROM Place '
+                           'WHERE Place.name LIKE (%s) OR Place.name LIKE (%s);', (like_pattern, like_pattern_1))
+            result = json.dumps(cursor.fetchall())
+            # Closing the connection
+            conn.close()
+            return result
         else:
             all_filter = Place.query.filter(Place.id.in_(place_filter_res),
                                             Place.rate.in_(rate_filter))
         return json.dumps([p.format() for p in all_filter]), 200
+
+
+@app.route("/trial", methods=['POST'])
+@auth.login_required
+def trial():
+    if request.method == 'POST':
+        # filter_data = request.get_json()
+        # search_filter = filter_data["search_box"]
+        # search_filter_1 = (filter_data["search_box"]).lower().capitalize()
+        # all_filter = Place.query.filter(Place.id.in_(place_filter_res),
+        #                                 Place.rate.in_(rate_filter),
+        #                                 Place.name.like(f"%{search_filter}%"))
+        return "Success", 200
+    # Closing the connection
+    conn.close()
+
+
+@app.route("/place/<int:place_id>", methods=['GET'])
+@auth.login_required
+def place(place_id):
+    place_to_work = Place.query.filter_by(id=place_id).all()
+    # user_to_work_data = request.get_json()
+    if request.method == 'GET' and place_to_work != []:
+        return json.dumps([p.format() for p in place_to_work]), 200
+
+
+@app.route("/place/photos/<int:place_id>", methods=['GET'])
+@auth.login_required
+def place_photo(place_id):
+    place_to_work = Place.query.filter_by(id=place_id).all()
+    # user_to_work_data = request.get_json()
+    if request.method == 'GET' and place_to_work != []:
+        return json.dumps([p.format() for p in PlacePhoto.query.filter_by(place_id=place_id).all()]), 200
 
 
 if __name__ == "__main__":

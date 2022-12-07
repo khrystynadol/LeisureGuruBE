@@ -109,6 +109,22 @@ class Place(db.Model):
         return self.id
 
 
+class PlacePhoto(db.Model):
+    __tablename__ = 'place_photo'
+
+    id = db.Column(db.Integer, primary_key=True)
+    image = db.Column(db.String(500), nullable=False)
+    place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
+
+    def format(self):
+        return {
+            'image': self.image
+        }
+
+    def as_dict(self):
+        return {p.image: getattr(self, p.image) for p in self.__table__.columns}
+
+
 class PlaceActivity(db.Model):
     __tablename__ = 'place_activity'
 

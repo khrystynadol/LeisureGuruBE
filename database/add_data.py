@@ -1,4 +1,4 @@
-from models import app, db, Place, Season, Activity, PlaceActivity, PlaceSeason, User
+from models import app, db, Place, Season, Activity, PlaceActivity, PlaceSeason, User, PlacePhoto
 from werkzeug.security import generate_password_hash
 
 with app.app_context():
@@ -480,4 +480,18 @@ with app.app_context():
                         place_activity16, place_activity17, place_activity18, place_activity19, place_activity20,
                         place_activity21, place_activity22, place_activity23, place_activity24, place_activity25,
                         place_activity26, place_activity23_a])
+    db.session.commit()
+
+    photo_1_1 = PlacePhoto(image="https://i.pinimg.com/236x/0d/7b/6d/0d7b6d9c194370e12d6b5e249df60bab.jpg",
+                           place_id=place1.id)
+    photo_1_2 = PlacePhoto(image="https://i.pinimg.com/236x/da/a7/0f/daa70ffbca353610e8f336144ae9e541.jpg",
+                           place_id=place1.id)
+    photo_1_3 = PlacePhoto(image="https://i.pinimg.com/236x/2c/59/10/2c5910bd003d30126137366c58fa32d5.jpg",
+                           place_id=place1.id)
+    photo_1_4 = PlacePhoto(image="https://i.pinimg.com/236x/aa/67/7d/aa677d678a8311b8f2adf0da88422147.jpg",
+                           place_id=place1.id)
+    photo_1_5 = PlacePhoto(image="https://i.pinimg.com/236x/ae/cd/66/aecd664acde6ab6599e3b0b30d530bbf.jpg",
+                           place_id=place1.id)
+
+    db.session.add_all([photo_1_1, photo_1_2, photo_1_3, photo_1_4, photo_1_5])
     db.session.commit()
