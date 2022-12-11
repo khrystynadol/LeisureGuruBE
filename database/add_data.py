@@ -479,7 +479,7 @@ with app.app_context():
                         place_activity11, place_activity12, place_activity13, place_activity14, place_activity15,
                         place_activity16, place_activity17, place_activity18, place_activity19, place_activity20,
                         place_activity21, place_activity22, place_activity23, place_activity24, place_activity25,
-                        place_activity26, place_activity23_a])
+                        place_activity26, place_activity27, place_activity23_a])
     db.session.commit()
 
     photo_1_1 = PlacePhoto(image="https://i.pinimg.com/236x/0d/7b/6d/0d7b6d9c194370e12d6b5e249df60bab.jpg",
@@ -493,5 +493,299 @@ with app.app_context():
     photo_1_5 = PlacePhoto(image="https://i.pinimg.com/236x/ae/cd/66/aecd664acde6ab6599e3b0b30d530bbf.jpg",
                            place_id=place1.id)
 
-    db.session.add_all([photo_1_1, photo_1_2, photo_1_3, photo_1_4, photo_1_5])
+    photo_2_1 = PlacePhoto(image='https://i.pinimg.com/236x/02/cf/63/02cf6373672b8d5c75ab85eb959743ad.jpg',
+                           place_id=place2.id)
+    photo_2_2 = PlacePhoto(image='https://i.pinimg.com/236x/c8/02/69/c802695adc58871966e866a7d95c9c35.jpg',
+                           place_id=place2.id)
+    photo_2_3 = PlacePhoto(image='https://i.pinimg.com/236x/e7/a5/38/e7a538bbbcc82cef586fa8f6e8535dc6.jpg',
+                           place_id=place2.id)
+    photo_2_4 = PlacePhoto(image='https://i.pinimg.com/236x/0f/3b/62/0f3b62c08cdff9c35730bca74f2314a2.jpg',
+                           place_id=place2.id)
+    photo_2_5 = PlacePhoto(image='https://i.pinimg.com/236x/19/18/00/191800d804b6c00d5d88ac1c2c0a9a75.jpg',
+                           place_id=place2.id)
+
+    photo_3_1 = PlacePhoto(image='https://i.pinimg.com/236x/d2/7d/21/d27d21d3219ff543f39ebb1faddf42e9.jpg',
+                           place_id=place3.id)
+    photo_3_2 = PlacePhoto(image='https://i.pinimg.com/236x/af/46/35/af463562ade90ef7bd1cf21b5c269a8b.jpg',
+                           place_id=place3.id)
+    photo_3_3 = PlacePhoto(image='https://i.pinimg.com/236x/c5/22/d9/c522d9ef9f78d1bbca2133677492c1b6.jpg',
+                           place_id=place3.id)
+    photo_3_4 = PlacePhoto(image='https://i.pinimg.com/236x/24/c9/66/24c9667124a9e50d91fe96143a3bea59.jpg',
+                           place_id=place3.id)
+    photo_3_5 = PlacePhoto(image='https://i.pinimg.com/236x/17/be/d6/17bed6989d4d3f664f45925d780440d3.jpg',
+                           place_id=place3.id)
+
+    photo_4_1 = PlacePhoto(image='https://i.pinimg.com/236x/16/0a/22/160a220b82ae907f0acb947949bfe8a9.jpg',
+                           place_id=place4.id)
+    photo_4_2 = PlacePhoto(image='https://i.pinimg.com/236x/fd/34/ff/fd34ffa2b49b19e5cab2867ed6cec35a.jpg',
+                           place_id=place4.id)
+    photo_4_3 = PlacePhoto(image='https://i.pinimg.com/236x/1c/1d/94/1c1d94ba77eb09de61d6af62f21d916b.jpg',
+                           place_id=place4.id)
+    photo_4_4 = PlacePhoto(image='https://i.pinimg.com/236x/a9/f8/45/a9f845c7b19625f177b491d5480b4214.jpg',
+                           place_id=place4.id)
+    photo_4_5 = PlacePhoto(image='https://i.pinimg.com/236x/53/df/70/53df7051c062892076943b36882e4f4a.jpg',
+                           place_id=place4.id)
+
+    photo_5_1 = PlacePhoto(image='https://i.pinimg.com/236x/0d/24/46/0d24462187a280540df1ee2374732f39.jpg',
+                           place_id=place5.id)
+    photo_5_2 = PlacePhoto(image='https://i.pinimg.com/236x/ce/0e/7a/ce0e7a1b7e7a493dbd0e90f7cfde1f32.jpg',
+                           place_id=place5.id)
+    photo_5_3 = PlacePhoto(image='https://i.pinimg.com/236x/cb/32/02/cb3202d29d7afa218ae2a382b0aff04d.jpg',
+                           place_id=place5.id)
+    photo_5_4 = PlacePhoto(image='https://i.pinimg.com/236x/50/35/82/5035824be9d9c08c336043758c0c9b6c.jpg',
+                           place_id=place5.id)
+    photo_5_5 = PlacePhoto(image='https://i.pinimg.com/236x/c6/92/41/c69241583fe5aacf91ea953673a5a576.jpg',
+                           place_id=place5.id)
+
+    photo_6_1 = PlacePhoto(image='https://i.pinimg.com/236x/4c/ff/c5/4cffc55c4a05539e78f66ecf56daeabd.jpg',
+                           place_id=place6.id)
+    photo_6_2 = PlacePhoto(image='https://i.pinimg.com/236x/d2/25/38/d225385fc0e998b6aa1e694816c8d26e.jpg',
+                           place_id=place6.id)
+    photo_6_3 = PlacePhoto(image='https://i.pinimg.com/236x/da/15/c4/da15c442ac035362dd7bd51a2fc99f92.jpg',
+                           place_id=place6.id)
+    photo_6_4 = PlacePhoto(image='https://i.pinimg.com/236x/bd/51/f9/bd51f9117990b2877230768e9a2c9794.jpg',
+                           place_id=place6.id)
+    photo_6_5 = PlacePhoto(image='https://i.pinimg.com/236x/1c/02/5c/1c025c39d21852db8c2469bbcb2a7cc8.jpg',
+                           place_id=place6.id)
+
+    photo_7_1 = PlacePhoto(image='https://i.pinimg.com/236x/53/df/70/53df7051c062892076943b36882e4f4a.jpg',
+                           place_id=place7.id)
+    photo_7_2 = PlacePhoto(image='https://i.pinimg.com/236x/10/d5/c8/10d5c808a23ead55828da4aa918a4f77.jpg',
+                           place_id=place7.id)
+    photo_7_3 = PlacePhoto(image='https://i.pinimg.com/236x/34/0d/a3/340da3f183e1ae11c4da0a336ecb0914.jpg',
+                           place_id=place7.id)
+    photo_7_4 = PlacePhoto(image='https://i.pinimg.com/236x/57/b2/d5/57b2d5ec4cb0fedacd0f0c2952b4c540.jpg',
+                           place_id=place7.id)
+    photo_7_5 = PlacePhoto(image='https://i.pinimg.com/236x/a6/5d/c5/a65dc5571bd6b4f6294f223d8e88fd86.jpg',
+                           place_id=place7.id)
+
+    photo_8_1 = PlacePhoto(image='https://i.pinimg.com/236x/2d/07/d4/2d07d4eb984967e20fc2d412891fc543.jpg',
+                           place_id=place8.id)
+    photo_8_2 = PlacePhoto(image='https://i.pinimg.com/236x/7e/01/57/7e0157df6087528b3d1f7eca32326abb.jpg',
+                           place_id=place8.id)
+    photo_8_3 = PlacePhoto(image='https://i.pinimg.com/236x/14/bc/75/14bc752f5a954d35e8327a251b6fabd6.jpg',
+                           place_id=place8.id)
+    photo_8_4 = PlacePhoto(image='https://i.pinimg.com/236x/f6/9d/ef/f69def430aba032f1fb935181c724628.jpg',
+                           place_id=place8.id)
+    photo_8_5 = PlacePhoto(image='https://i.pinimg.com/236x/37/47/b6/3747b685675731405cc49c85a93d5708.jpg',
+                           place_id=place8.id)
+
+    photo_9_1 = PlacePhoto(image='https://i.pinimg.com/236x/4d/d4/70/4dd4702744a68ba14896f092aaddc313.jpg',
+                           place_id=place9.id)
+    photo_9_2 = PlacePhoto(image='https://i.pinimg.com/236x/ea/68/4d/ea684d0e620bf8bd83ad54c65aa61064.jpg',
+                           place_id=place9.id)
+    photo_9_3 = PlacePhoto(image='https://i.pinimg.com/236x/8f/a4/c4/8fa4c4ec8d354829fc215efd78d348f9.jpg',
+                           place_id=place9.id)
+    photo_9_4 = PlacePhoto(image='https://i.pinimg.com/236x/e1/6b/fe/e16bfe76a228fabd137bbe41d5d20dfb.jpg',
+                           place_id=place9.id)
+    photo_9_5 = PlacePhoto(image='https://i.pinimg.com/236x/0a/76/19/0a761978ddfa60a10536bcffa5abcc68.jpg',
+                           place_id=place9.id)
+
+    photo_10_1 = PlacePhoto(image='https://i.pinimg.com/236x/c2/bb/af/c2bbafc54ac46bf6b4d0628bc1be9f3a.jpg',
+                            place_id=place10.id)
+    photo_10_2 = PlacePhoto(image='https://i.pinimg.com/236x/aa/4b/38/aa4b38a4297a4cdd040b5347ebbf3291.jpg',
+                            place_id=place10.id)
+    photo_10_3 = PlacePhoto(image='https://i.pinimg.com/236x/b2/25/b9/b225b96ea5966b398bcef6e4404d9c36.jpg',
+                            place_id=place10.id)
+    photo_10_4 = PlacePhoto(image='https://i.pinimg.com/236x/d6/14/7c/d6147cd4d9263612a1bea40e86aad916.jpg',
+                            place_id=place10.id)
+    photo_10_5 = PlacePhoto(image='https://i.pinimg.com/236x/3f/56/57/3f56573fce4c46289553191d9a3d5b3c.jpg',
+                            place_id=place10.id)
+
+    photo_11_1 = PlacePhoto(image='https://i.pinimg.com/236x/02/be/a7/02bea731717f9efd6a724312ca2a7380.jpg',
+                            place_id=place11.id)
+    photo_11_2 = PlacePhoto(image='https://i.pinimg.com/236x/33/56/17/335617354ec242bef67196348ffc291a.jpg',
+                            place_id=place11.id)
+    photo_11_3 = PlacePhoto(image='https://i.pinimg.com/236x/7f/8b/6c/7f8b6c9221a2c1d0dc53cd6688e876ec.jpg',
+                            place_id=place11.id)
+    photo_11_4 = PlacePhoto(image='https://i.pinimg.com/236x/ef/77/63/ef77639a1697bf8e5fdcc78e70ebd3e7.jpg',
+                            place_id=place11.id)
+    photo_11_5 = PlacePhoto(image='https://i.pinimg.com/236x/ec/79/b7/ec79b7e7b42b04cbd5529260704d2426.jpg',
+                            place_id=place11.id)
+
+    photo_12_1 = PlacePhoto(image='https://i.pinimg.com/236x/42/55/97/42559709d41ee8c07fd1448dc611e8df.jpg',
+                            place_id=place12.id)
+    photo_12_2 = PlacePhoto(image='https://i.pinimg.com/236x/f6/ae/3c/f6ae3ca5dfb3e150f8dcf14f0d35b8d2.jpg',
+                            place_id=place12.id)
+    photo_12_3 = PlacePhoto(image='https://i.pinimg.com/236x/c0/ea/dc/c0eadc20bdfc9e8d02a39632302b29ea.jpg',
+                            place_id=place12.id)
+    photo_12_4 = PlacePhoto(image='https://i.pinimg.com/236x/9d/7b/ea/9d7beab4839e9b56a2dd68268ede2ca3.jpg',
+                            place_id=place12.id)
+    photo_12_5 = PlacePhoto(image='https://i.pinimg.com/236x/ba/1a/d2/ba1ad21975389c4c2a7ebe89281a17b3.jpg',
+                            place_id=place12.id)
+
+    photo_13_1 = PlacePhoto(image='https://i.pinimg.com/236x/c1/68/a4/c168a43aee64b3225bf95636cf7c7557.jpg',
+                            place_id=place13.id)
+    photo_13_2 = PlacePhoto(image='https://i.pinimg.com/236x/f1/72/79/f172797b0fdd9009161d9302fbec9795.jpg',
+                            place_id=place13.id)
+    photo_13_3 = PlacePhoto(image='https://i.pinimg.com/236x/46/93/aa/4693aacd72ded1d999df71b3d4dad6f9.jpg',
+                            place_id=place13.id)
+    photo_13_4 = PlacePhoto(image='https://i.pinimg.com/236x/b3/70/d7/b370d76d9f7addd755ecdbaec06442b0.jpg',
+                            place_id=place13.id)
+    photo_13_5 = PlacePhoto(image='https://i.pinimg.com/236x/dd/71/90/dd7190845113be5ce839e911dc74ffeb.jpg',
+                            place_id=place13.id)
+
+    photo_14_1 = PlacePhoto(image='https://i.pinimg.com/236x/39/0d/13/390d134ecba8dda6aa913f8fb04ba122.jpg',
+                            place_id=place14.id)
+    photo_14_2 = PlacePhoto(image='https://i.pinimg.com/236x/7a/bd/92/7abd9225743a5872fd2f1f1b40085e5a.jpg',
+                            place_id=place14.id)
+    photo_14_3 = PlacePhoto(image='https://i.pinimg.com/236x/40/f3/ef/40f3efb173986fc996e9290727ae50f0.jpg',
+                            place_id=place14.id)
+    photo_14_4 = PlacePhoto(image='https://i.pinimg.com/236x/87/cd/a4/87cda49fbbb17f0d05c1092c89a0b7a2.jpg',
+                            place_id=place14.id)
+    photo_14_5 = PlacePhoto(image='https://i.pinimg.com/236x/fa/77/2b/fa772bf3aa26b692c6c637ec0cb9c0fc.jpg',
+                            place_id=place14.id)
+
+    photo_15_1 = PlacePhoto(image='', place_id=place15.id)
+    photo_15_2 = PlacePhoto(image='https://i.pinimg.com/236x/ad/ae/2b/adae2b5dc3a521ac0e3c542ba8313ac9.jpg',
+                            place_id=place15.id)
+    photo_15_3 = PlacePhoto(image='https://topclub.ua/images/uploads/kryjivka_1.jpg', place_id=place15.id)
+    photo_15_4 = PlacePhoto(image='https://tamtour.com.ua/local/image/556/009/985633-900@.jpg', place_id=place15.id)
+    photo_15_5 = PlacePhoto(image='https://i.pinimg.com/originals/6f/a5/e7/6fa5e70bddce0deac435ca68091f5453.jpg',
+                            place_id=place15.id)
+
+    photo_16_1 = PlacePhoto(image='https://termalfurdok.com/wp-content/uploads/2021/07/'
+                                  'aquapark_munkacs_karpatia-768x512.jpg', place_id=place16.id)
+    photo_16_2 = PlacePhoto(image='https://pmg.ua/uploads/2021-07/15/60f0286c116f8-217850216_'
+                                  '4178244302269350_61124550066988604_njpg.jpg', place_id=place16.id)
+    photo_16_3 = PlacePhoto(image='https://tourinform.org.ua/wp-content/uploads/2021/08/217767802_'
+                                  '175684357945778_6130320438056643643_n.jpg', place_id=place16.id)
+    photo_16_4 = PlacePhoto(image='https://tourinform.org.ua/wp-content/uploads/2021/08/218087985_'
+                                  '176791931168354_3558588235874281532_n.jpg', place_id=place16.id)
+    photo_16_5 = PlacePhoto(image='https://tourinform.org.ua/wp-content/uploads/2021/08/224695943_'
+                                  '184966847017529_3660725107713672017_n.jpg', place_id=place16.id)
+
+    photo_17_1 = PlacePhoto(image='https://akvapark-lviv.virtual.ua/images/374587/akvapark-lviv.virtual.ua_003.jpg',
+                            place_id=place17.id)
+    photo_17_2 = PlacePhoto(image='https://akvapark-lviv.virtual.ua/images/374585/akvapark-lviv.virtual.ua_002.jpg',
+                            place_id=place17.id)
+    photo_17_3 = PlacePhoto(image='https://ua.igotoworld.com/frontend/webcontent/websites/1/images/'
+                                  'gallery/10731_800x600_LvivAkvapark02.jpg', place_id=place17.id)
+    photo_17_4 = PlacePhoto(image='https://akvapark-lviv.virtual.ua/images/374595/akvapark-lviv.virtual.ua_009.jpg',
+                            place_id=place17.id)
+    photo_17_5 = PlacePhoto(image='https://www.nezabarom.ua/img/objects/bce9a8251b.jpg', place_id=place17.id)
+
+    photo_18_1 = PlacePhoto(image='https://i.pinimg.com/236x/2d/c8/a9/2dc8a9c5028458d1e62ede009f5f0979.jpg',
+                            place_id=place18.id)
+    photo_18_2 = PlacePhoto(image='https://i.pinimg.com/236x/39/79/87/397987ba15cd44b9f4f5b1bb72ec6341.jpg',
+                            place_id=place18.id)
+    photo_18_3 = PlacePhoto(image='https://i.pinimg.com/236x/4a/9d/34/4a9d3464a9e2806cdc9dff4135a806ef.jpg',
+                            place_id=place18.id)
+    photo_18_4 = PlacePhoto(image='https://i.pinimg.com/236x/1b/a6/bc/1ba6bc72e5bbb40b1816585f781f0608.jpg',
+                            place_id=place18.id)
+    photo_18_5 = PlacePhoto(image='https://i.pinimg.com/236x/c0/a8/bd/c0a8bd75f77b854e4da640976c323756.jpg',
+                            place_id=place18.id)
+
+    photo_19_1 = PlacePhoto(image='https://guide.karpaty.ua/uploads/article_photos/'
+                                  'w420_1458144950-804682__w420_chomyak4.jpg', place_id=place19.id)
+    photo_19_2 = PlacePhoto(image='https://vsitury.com.ua/uploads/224/72635/2.jpg', place_id=place19.id)
+    photo_19_3 = PlacePhoto(image='https://karpatium.com.ua/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik'
+                                  'JBaHBBbUVDIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--fe24cce9dcf888a20d4966de7560e71'
+                                  'e35be5ae5/mt_homiak.jpeg', place_id=place19.id)
+    photo_19_4 = PlacePhoto(image='https://i.pinimg.com/originals/5f/1d/47/5f1d474b4fee059331f6e4cf79752aba.jpg',
+                            place_id=place19.id)
+    photo_19_5 = PlacePhoto(image='https://faynotour.com/wp-content/uploads/2021/07/homjak-3.jpg', place_id=place19.id)
+
+    photo_20_1 = PlacePhoto(image='https://travelland.com.ua/wp-content/uploads/2019/05/2018-05-03_232822.jpg',
+                            place_id=place20.id)
+    photo_20_2 = PlacePhoto(image='https://svitkarpat.org/wp-content/uploads/2020/05/Hora-Makovytsia-YAremche.jpg',
+                            place_id=place20.id)
+    photo_20_3 = PlacePhoto(image='https://pershij.com.ua/wp-content/uploads/2018/04/2407.jpg', place_id=place20.id)
+    photo_20_4 = PlacePhoto(image='https://ua.igotoworld.com/frontend/webcontent/websites/1/images/'
+                                  'gallery/69606_370x246_Magura_(Jablunycia).jpg', place_id=place20.id)
+    photo_20_5 = PlacePhoto(image='https://vpohid.com.ua/static/photothumbs/2606_1000.jpg', place_id=place20.id)
+
+    photo_21_1 = PlacePhoto(image='https://2.bp.blogspot.com/-jGg3-B8830k/WDBG7fdR1cI/AAAAAAAAJ1E/'
+                                  'HGrgEYuZjdYAMWw4ciuyjiK0mDf6b1KHwCLcB/s640/DSC_0552-1.jpg', place_id=place21.id)
+    photo_21_2 = PlacePhoto(image='https://4.bp.blogspot.com/-S6qGfVGfpDg/WDBHL4qJIpI/AAAAAAAAJ1g/'
+                                  'rYLpwOc_WbICe9BClzHkSqq3AFbxpXqHQCLcB/s640/DSC_0572-1.jpg', place_id=place21.id)
+    photo_21_3 = PlacePhoto(image='https://3.bp.blogspot.com/-2QrqndPd0oM/WDBHjMcfsEI/AAAAAAAAJ2I/'
+                                  '1tjejRtq-0cgNql9TfaGBwtZOeVr5L6YwCLcB/s640/DSC_0598-1.jpg', place_id=place21.id)
+    photo_21_4 = PlacePhoto(image='https://karpatium.com.ua/rails/active_storage/representations/eyJfcmFpbHMiOnsibWVz'
+                                  'c2FnZSI6IkJBaHBBdnNGIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--2aeac10b222264c8235f'
+                                  '3a56328d81db8619af24/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCam9MY21WemFYcGxTU0lKTkRVd'
+                                  '2VBWTZCa1ZVIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--83112b0b002f5b4ddfaaafb9c'
+                                  'db3a656043aef2a/%D0%BA%D0%BE%D0%BB%D0%B8%D0%B1%D0%B0-%D0%B3%D0%BE%D1%80%D0%B0-%D1%'
+                                  '8F%D0%B3%D1%96%D0%B4%D0%BD%D0%B0.jpeg', place_id=place21.id)
+    photo_21_5 = PlacePhoto(image='https://proydisvit.com/userfiles/131342738_668714507151043_917174649037638497_n.jpg',
+                            place_id=place21.id)
+
+    photo_22_1 = PlacePhoto(image='https://travels-ukraine.com/wp-content/uploads/2017/03/IMG_5133.jpg',
+                            place_id=place22.id)
+    photo_22_2 = PlacePhoto(image='https://travels-ukraine.com/wp-content/uploads/2017/03/4-marshrut-na-parashku.jpg',
+                            place_id=place22.id)
+    photo_22_3 = PlacePhoto(image='https://find-way.com.ua/components/com_jshopping/files/img_products/'
+                                  'full_GOPR6314.jpg', place_id=place22.id)
+    photo_22_4 = PlacePhoto(image='https://stezhkamu.com/img/places/473/2681.jpg', place_id=place22.id)
+    photo_22_5 = PlacePhoto(image='https://stezhkamu.com/img/places/473/2685.jpg', place_id=place22.id)
+
+    photo_23_1 = PlacePhoto(image='https://i.ytimg.com/vi/ZCt799iZO78/maxresdefault.jpg',
+                            place_id=place23.id)
+    photo_23_2 = PlacePhoto(image='https://travels-ukraine.com/wp-content/uploads/2016/11/61512_800x600_bukovel3-2.jpg',
+                            place_id=place23.id)
+    photo_23_3 = PlacePhoto(image='https://i.ytimg.com/vi/pjkhZxwc_po/maxresdefault.jpg', place_id=place23.id)
+    photo_23_4 = PlacePhoto(image='https://i.ytimg.com/vi/lm2lQHMf6G4/maxresdefault.jpg', place_id=place23.id)
+    photo_23_5 = PlacePhoto(image='https://static.rootsrated.com/image/upload/s--P9UQL-z0--/'
+                                  't_rr_large_traditional/hfn5r7y4gkheon31gpcu.jpg', place_id=place23.id)
+
+    photo_24_1 = PlacePhoto(image='https://i.ytimg.com/vi/xxRUAW93nKE/maxresdefault.jpg', place_id=place24.id)
+    photo_24_2 = PlacePhoto(image='https://i.ytimg.com/vi/lm2lQHMf6G4/maxresdefault.jpg', place_id=place24.id)
+    photo_24_3 = PlacePhoto(image='https://content.26in.fr/p/pictures/4/9/7/49725/1d9d1c-9.jpg',
+                            place_id=place24.id)
+    photo_24_4 = PlacePhoto(image='https://u.profitroom.com/2018-czarnaperla-czarnagora-pl/thumb/1840x840/uploads/'
+                                  'test/IMG_2995_CzarnaGora_ABC_Staronphoto.jpg', place_id=place24.id)
+    photo_24_5 = PlacePhoto(image='https://content.26in.fr/p/pictures/3/5/5/35534/39d016-9.jpg', place_id=place24.id)
+
+    photo_25_1 = PlacePhoto(image='https://i.ytimg.com/vi/lm2lQHMf6G4/maxresdefault.jpg', place_id=place25.id)
+    photo_25_2 = PlacePhoto(image='https://keyassets.timeincuk.net/inspirewp/live/wp-content/uploads/sites/'
+                                  '11/2014/09/ISAC6425.jpg', place_id=place25.id)
+    photo_25_3 = PlacePhoto(image='https://i.ytimg.com/vi/xxRUAW93nKE/maxresdefault.jpg', place_id=place25.id)
+    photo_25_4 = PlacePhoto(image='https://minttours.com/wp-content/uploads/2020/05/Canada_Whistler-Bike-Park_14.jpg',
+                            place_id=place25.id)
+    photo_25_5 = PlacePhoto(image='https://www.moredirt.com/photos/90578.jpg', place_id=place25.id)
+
+    photo_26_1 = PlacePhoto(image='https://i.ytimg.com/vi/lX8lv0Q4GyQ/maxresdefault.jpg', place_id=place26.id)
+    photo_26_2 = PlacePhoto(image='https://verkhovyna.life/files_ci/168/verkhovynalife-cheremosh1__large.jpg',
+                            place_id=place26.id)
+    photo_26_3 = PlacePhoto(image='https://skyta.com.ua/trash/statica/0/f76a65b24818f95a2525ba0be8729865_600x1000.jpg',
+                            place_id=place26.id)
+    photo_26_4 = PlacePhoto(image='https://i.tyzhden.ua/content/photoalbum/2016/07_2016/04/river/05.jpg',
+                            place_id=place26.id)
+    photo_26_5 = PlacePhoto(image='https://i.ytimg.com/vi/YTnTAmbPvIk/maxresdefault.jpg', place_id=place26.id)
+
+    photo_27_1 = PlacePhoto(image='https://internet-bilet.ua/images/room_header_photo/size3/'
+                                  'hph_1487841574_58aea9265efed.jpg', place_id=place27.id)
+    photo_27_2 = PlacePhoto(image='https://upload.wikimedia.org/wikipedia/uk/1/12/Velotrack_ska.jpg',
+                            place_id=place27.id)
+    photo_27_3 = PlacePhoto(image='https://tvoemisto.tv/media/gallery/full/1/2/1247984_o.jpg', place_id=place27.id)
+    photo_27_4 = PlacePhoto(image='https://f.mixsport.pro/location/9335/0nbIE.jpg', place_id=place27.id)
+
+    db.session.add_all([photo_1_1, photo_1_2, photo_1_3, photo_1_4, photo_1_5,
+                        photo_2_1, photo_2_2, photo_2_3, photo_2_4, photo_2_5,
+                        photo_3_1, photo_3_2, photo_3_3, photo_3_4, photo_3_5,
+                        photo_4_1, photo_4_2, photo_4_3, photo_4_4, photo_4_5,
+                        photo_5_1, photo_5_2, photo_5_3, photo_5_4, photo_5_5,
+                        photo_6_1, photo_6_2, photo_6_3, photo_6_4, photo_6_5,
+                        photo_7_1, photo_7_2, photo_7_3, photo_7_4, photo_7_5,
+                        photo_8_1, photo_8_2, photo_8_3, photo_8_4, photo_8_5,
+                        photo_9_1, photo_9_2, photo_9_3, photo_9_4, photo_9_5,
+                        photo_10_1, photo_10_2, photo_10_3, photo_10_4, photo_10_5,
+                        photo_11_1, photo_11_2, photo_11_3, photo_11_4, photo_11_5,
+                        photo_12_1, photo_12_2, photo_12_3, photo_12_4, photo_12_5,
+                        photo_13_1, photo_13_2, photo_13_3, photo_13_4, photo_13_5,
+                        photo_14_1, photo_14_2, photo_14_3, photo_14_4, photo_14_5,
+                        photo_15_1, photo_15_2, photo_15_3, photo_15_4, photo_15_5,
+                        photo_16_1, photo_16_2, photo_16_3, photo_16_4, photo_16_5,
+                        photo_17_1, photo_17_2, photo_17_3, photo_17_4, photo_17_5,
+                        photo_18_1, photo_18_2, photo_18_3, photo_18_4, photo_18_5,
+                        photo_19_1, photo_19_2, photo_19_3, photo_19_4, photo_19_5,
+                        photo_20_1, photo_20_2, photo_20_3, photo_20_4, photo_20_5,
+                        photo_21_1, photo_21_2, photo_21_3, photo_21_4, photo_21_5,
+                        photo_22_1, photo_22_2, photo_22_3, photo_22_4, photo_22_5,
+                        photo_23_1, photo_23_2, photo_23_3, photo_23_4, photo_23_5,
+                        photo_24_1, photo_24_2, photo_24_3, photo_24_4, photo_24_5,
+                        photo_25_1, photo_25_2, photo_25_3, photo_25_4, photo_25_5,
+                        photo_26_1, photo_26_2, photo_26_3, photo_26_4, photo_26_5,
+                        photo_27_1, photo_27_2, photo_27_3, photo_27_4
+                        ])
     db.session.commit()

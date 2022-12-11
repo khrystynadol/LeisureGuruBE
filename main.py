@@ -368,7 +368,7 @@ def filtering():
             like_pattern = '%{}%'.format(search_filter)
             like_pattern_1 = '%{}%'.format(search_filter_1)
             cursor.execute('SELECT * FROM Place '
-                           'WHERE Place.name LIKE (%s) OR Place.name LIKE (%s);', (like_pattern, like_pattern_1))
+                           'WHERE (Place.name LIKE (%s) OR Place.name LIKE (%s));', (like_pattern, like_pattern_1))
             result = json.dumps(cursor.fetchall())
             # Closing the connection
             conn.close()
