@@ -1,6 +1,5 @@
-from flask import request, flash, abort, jsonify, render_template, url_for, make_response
-# from flask_login import login_required, current_user, login_user, logout_user, LoginManager  # , UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import request, flash, jsonify, url_for, make_response, redirect
+from werkzeug.security import check_password_hash
 from flask_mail import Message
 from flask_mail import Mail
 import psycopg2
@@ -190,7 +189,7 @@ def confirm_email(token):
         db.session.add(user_to_check)
         db.session.commit()
         flash('You have confirmed your account. Thanks!', 'success')
-    return redirect(url_for('confirm')) # return "Confirm email"  # redirect(url_for('main.home'))
+    return redirect(url_for('confirm'))  # return "Confirm email"  # redirect(url_for('main.home'))
 
 
 '''
@@ -364,7 +363,7 @@ def filtering():
             conn = psycopg2.connect(
                 database=DB_NAME,
                 user='postgres',
-                password='leisuregurube',
+                password='12345',
                 host='localhost',
                 port='5432'
             )
@@ -377,13 +376,13 @@ def filtering():
             like_pattern_1 = '%{}%'.format(search_filter_1)
             like_pattern_2 = '%{}%'.format(search_filter_2)
             like_pattern_3 = '%{}%'.format(search_filter_3)
-            cursor.execute('SELECT id FROM Place '
-                           'WHERE (Place.name LIKE (%s) OR Place.name LIKE (%s) '
-                           'OR Place.name LIKE (%s) OR Place.name LIKE (%s) '
-                           'OR Place.city LIKE (%s) OR Place.city LIKE (%s) '
-                           'OR Place.city LIKE (%s) OR Place.city LIKE (%s) '
-                           'OR Place.country LIKE (%s) OR Place.country LIKE (%s) '
-                           'OR Place.country LIKE (%s) OR Place.country LIKE (%s));',
+            cursor.execute('SELECT id FROM place '
+                           'WHERE (place.name LIKE (%s) OR place.name LIKE (%s) '
+                           'OR place.name LIKE (%s) OR place.name LIKE (%s) '
+                           'OR place.city LIKE (%s) OR place.city LIKE (%s) '
+                           'OR place.city LIKE (%s) OR place.city LIKE (%s) '
+                           'OR place.country LIKE (%s) OR place.country LIKE (%s) '
+                           'OR place.country LIKE (%s) OR place.country LIKE (%s));',
                            (like_pattern, like_pattern_1, like_pattern_2, like_pattern_3,
                             like_pattern, like_pattern_1, like_pattern_2, like_pattern_3,
                             like_pattern, like_pattern_1, like_pattern_2, like_pattern_3))
@@ -413,7 +412,7 @@ def trial():
         #                                 Place.name.like(f"%{search_filter}%"))
         return "Success", 200
     # Closing the connection
-    conn.close()
+    # conn.close()
 
 
 @app.route("/place/<int:place_id>", methods=['GET'])
