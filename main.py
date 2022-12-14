@@ -1,6 +1,5 @@
-from flask import request, flash, abort, jsonify, render_template, url_for, make_response
-# from flask_login import login_required, current_user, login_user, logout_user, LoginManager  # , UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import request, flash, jsonify, url_for, make_response, redirect
+from werkzeug.security import check_password_hash
 from flask_mail import Message
 from flask_mail import Mail
 import psycopg2
@@ -168,6 +167,12 @@ def home():
 #     else:
 #         return "Sign up :)"
 
+@app.route('/confirm')
+def confirm():
+    response = make_response()
+    response.status_code = 200
+    return response
+
 
 @app.route('/confirm/<token>')
 def confirm_email(token):
@@ -184,7 +189,7 @@ def confirm_email(token):
         db.session.add(user_to_check)
         db.session.commit()
         flash('You have confirmed your account. Thanks!', 'success')
-    return "Confirm email"  # redirect(url_for('main.home'))
+    return redirect(url_for('confirm'))  # return "Confirm email"  # redirect(url_for('main.home'))
 
 
 '''
@@ -366,14 +371,30 @@ def filtering():
             cursor = conn.cursor()
             search_filter = filter_data["search_box"]
             search_filter_1 = (filter_data["search_box"]).lower().capitalize()
+            search_filter_2 = (filter_data["search_box"]).upper()
+            search_filter_3 = (filter_data["search_box"]).lower()
             like_pattern = '%{}%'.format(search_filter)
             like_pattern_1 = '%{}%'.format(search_filter_1)
-            cursor.execute('SELECT * FROM Place '
-                           'WHERE (Place.name LIKE (%s) OR Place.name LIKE (%s));', (like_pattern, like_pattern_1))
-            result = json.dumps(cursor.fetchall())
+            like_pattern_2 = '%{}%'.format(search_filter_2)
+            like_pattern_3 = '%{}%'.format(search_filter_3)
+            cursor.execute('SELECT id FROM place '
+                           'WHERE (place.name LIKE (%s) OR place.name LIKE (%s) '
+                           'OR place.name LIKE (%s) OR place.name LIKE (%s) '
+                           'OR place.city LIKE (%s) OR place.city LIKE (%s) '
+                           'OR place.city LIKE (%s) OR place.city LIKE (%s) '
+                           'OR place.country LIKE (%s) OR place.country LIKE (%s) '
+                           'OR place.country LIKE (%s) OR place.country LIKE (%s));',
+                           (like_pattern, like_pattern_1, like_pattern_2, like_pattern_3,
+                            like_pattern, like_pattern_1, like_pattern_2, like_pattern_3,
+                            like_pattern, like_pattern_1, like_pattern_2, like_pattern_3))
+            cursor_res = [p[0] for p in cursor.fetchall()]
+            places = []
+            for id in cursor_res:
+                places.append(Place.query.filter_by(id=id).first())
+            # search_res = json.dumps([p.format() for p in places])
             # Closing the connection
             conn.close()
-            return result
+            return json.dumps([p.format() for p in places]), 200
         else:
             all_filter = Place.query.filter(Place.id.in_(place_filter_res),
                                             Place.rate.in_(rate_filter))
@@ -392,7 +413,7 @@ def trial():
         #                                 Place.name.like(f"%{search_filter}%"))
         return "Success", 200
     # Closing the connection
-    conn.close()
+    # conn.close()
 
 
 @app.route("/place/<int:place_id>", methods=['GET'])
