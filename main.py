@@ -378,9 +378,12 @@ def filtering():
             like_pattern_2 = '%{}%'.format(search_filter_2)
             like_pattern_3 = '%{}%'.format(search_filter_3)
             cursor.execute('SELECT id FROM Place '
-                           'WHERE (Place.name LIKE (%s) OR Place.name LIKE (%s) OR Place.name LIKE (%s) OR Place.name LIKE (%s) '
-                           'OR Place.city LIKE (%s) OR Place.city LIKE (%s) OR Place.city LIKE (%s) OR Place.city LIKE (%s) '
-                           'OR Place.country LIKE (%s) OR Place.country LIKE (%s) OR Place.country LIKE (%s) OR Place.country LIKE (%s));',
+                           'WHERE (Place.name LIKE (%s) OR Place.name LIKE (%s) '
+                           'OR Place.name LIKE (%s) OR Place.name LIKE (%s) '
+                           'OR Place.city LIKE (%s) OR Place.city LIKE (%s) '
+                           'OR Place.city LIKE (%s) OR Place.city LIKE (%s) '
+                           'OR Place.country LIKE (%s) OR Place.country LIKE (%s) '
+                           'OR Place.country LIKE (%s) OR Place.country LIKE (%s));',
                            (like_pattern, like_pattern_1, like_pattern_2, like_pattern_3,
                             like_pattern, like_pattern_1, like_pattern_2, like_pattern_3,
                             like_pattern, like_pattern_1, like_pattern_2, like_pattern_3))

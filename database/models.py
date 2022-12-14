@@ -113,7 +113,7 @@ class PlacePhoto(db.Model):
     __tablename__ = 'place_photo'
 
     id = db.Column(db.Integer, primary_key=True)
-    image = db.Column(db.String(500), nullable=False)
+    image = db.Column(db.String(1000), nullable=False)
     place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
 
     def format(self):
