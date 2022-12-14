@@ -14,7 +14,7 @@ from flask_httpauth import HTTPBasicAuth
 auth = HTTPBasicAuth()
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:leisuregurube@localhost:5432/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:pass1234@localhost:5432/{DB_NAME}'
 
 '''
 login_manager = LoginManager()
@@ -214,6 +214,7 @@ def registration():
 def registration():
     if request.method == 'POST' and request.is_json:
         user_data = UserSchema().load(request.json)
+        user_data["photo"] = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"
         new_user = User(**user_data)
         find_email = User.query.filter_by(email=new_user.email).first()
         db.session.add(new_user)
@@ -363,7 +364,7 @@ def filtering():
             conn = psycopg2.connect(
                 database=DB_NAME,
                 user='postgres',
-                password='12345',
+                password='pass1234',
                 host='localhost',
                 port='5432'
             )
