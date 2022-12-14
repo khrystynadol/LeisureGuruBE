@@ -482,16 +482,26 @@ with app.app_context():
                         place_activity26, place_activity27, place_activity23_a])
     db.session.commit()
 
-    photo_1_1 = PlacePhoto(image="https://i.pinimg.com/236x/0d/7b/6d/0d7b6d9c194370e12d6b5e249df60bab.jpg",
+    photo_1_1 = PlacePhoto(image='https://th.bing.com/th/id/R.3f616a6aaf8dfed672d41440c6ca20a6?rik=Frt4aVMzEw6qMQ&riu='
+                                 'http%3a%2f%2fitinery.com.ua%2fimg%2fobjects%2fobject_20170708_020345.jpg&ehk=4SBinni'
+                                 'D5SxQLHt8oP5U6K2MKmF50W27Prd0xeRpIfw%3d&risl=&pid=ImgRaw&r=0',
                            place_id=place1.id)
-    photo_1_2 = PlacePhoto(image="https://i.pinimg.com/236x/da/a7/0f/daa70ffbca353610e8f336144ae9e541.jpg",
+    photo_1_2 = PlacePhoto(image='https://th.bing.com/th/id/R.87e5136cc7ce36acad768cd89196a153?'
+                                 'rik=o5qPx%2bwLSo%2bTwA&pid=ImgRaw&r=0',
                            place_id=place1.id)
-    photo_1_3 = PlacePhoto(image="https://i.pinimg.com/236x/2c/59/10/2c5910bd003d30126137366c58fa32d5.jpg",
+    photo_1_3 = PlacePhoto(image='https://lwow.info/wp-content/uploads/2014/05/020101030.jpg',
                            place_id=place1.id)
-    photo_1_4 = PlacePhoto(image="https://i.pinimg.com/236x/aa/67/7d/aa677d678a8311b8f2adf0da88422147.jpg",
+    photo_1_4 = PlacePhoto(image='https://www.tatilinburada.com/picture0x0/3.ara-tatil-ozel-thy-ile-klasik-ukrayna'
+                                 '-turu-promo-fiyat-!.jpg',
                            place_id=place1.id)
-    photo_1_5 = PlacePhoto(image="https://i.pinimg.com/236x/ae/cd/66/aecd664acde6ab6599e3b0b30d530bbf.jpg",
+    photo_1_5 = PlacePhoto(image='https://opera.lviv.ua/wp-content/uploads/2017/09/8-3-1024x683.jpg',
                            place_id=place1.id)
+    # "https://i.pinimg.com/236x/0d/7b/6d/0d7b6d9c194370e12d6b5e249df60bab.jpg"
+    # "https://i.pinimg.com/236x/da/a7/0f/daa70ffbca353610e8f336144ae9e541.jpg"
+    # "https://i.pinimg.com/236x/2c/59/10/2c5910bd003d30126137366c58fa32d5.jpg"
+    # "https://i.pinimg.com/236x/aa/67/7d/aa677d678a8311b8f2adf0da88422147.jpg"
+    # "https://i.pinimg.com/236x/ae/cd/66/aecd664acde6ab6599e3b0b30d530bbf.jpg"
+    # 'https://th.bing.com/th/id/R.7d83817b2745adf33a609462fa1839f4?rik=Rth505W8hkHYJw&pid=ImgRaw&r=0'
 
     photo_2_1 = PlacePhoto(image='https://i.pinimg.com/236x/02/cf/63/02cf6373672b8d5c75ab85eb959743ad.jpg',
                            place_id=place2.id)
@@ -676,15 +686,18 @@ with app.app_context():
     photo_18_5 = PlacePhoto(image='https://i.pinimg.com/236x/c0/a8/bd/c0a8bd75f77b854e4da640976c323756.jpg',
                             place_id=place18.id)
 
-    photo_19_1 = PlacePhoto(image='https://guide.karpaty.ua/uploads/article_photos/'
-                                  'w420_1458144950-804682__w420_chomyak4.jpg', place_id=place19.id)
+    photo_19_1 = PlacePhoto(image='https://kufer.media/wp-content/uploads/2019/12/'
+                                  'alexandra-luniel-03Hz0iuig8c-unsplash-1.jpg', place_id=place19.id)
     photo_19_2 = PlacePhoto(image='https://vsitury.com.ua/uploads/224/72635/2.jpg', place_id=place19.id)
     photo_19_3 = PlacePhoto(image='https://karpatium.com.ua/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik'
                                   'JBaHBBbUVDIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--fe24cce9dcf888a20d4966de7560e71'
                                   'e35be5ae5/mt_homiak.jpeg', place_id=place19.id)
     photo_19_4 = PlacePhoto(image='https://i.pinimg.com/originals/5f/1d/47/5f1d474b4fee059331f6e4cf79752aba.jpg',
                             place_id=place19.id)
-    photo_19_5 = PlacePhoto(image='https://faynotour.com/wp-content/uploads/2021/07/homjak-3.jpg', place_id=place19.id)
+    photo_19_5 = PlacePhoto(image='https://calendar.karpaty.ua/uploads/article_photos/1467902189-328778__3.jpg',
+                            place_id=place19.id)
+    # 'https://faynotour.com/wp-content/uploads/2021/07/homjak-3.jpg'
+    # 'https://guide.karpaty.ua/uploads/article_photos/w420_1458144950-804682__w420_chomyak4.jpg'
 
     photo_20_1 = PlacePhoto(image='https://travelland.com.ua/wp-content/uploads/2019/05/2018-05-03_232822.jpg',
                             place_id=place20.id)

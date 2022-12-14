@@ -54,7 +54,7 @@ def upgrade() -> None:
     )
     op.create_table('place_photo',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('image', sa.String(length=500), nullable=True),
+    sa.Column('image', sa.String(length=1000), nullable=True),
     sa.Column('place_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['place_id'], ['place.id'], ),
     sa.PrimaryKeyConstraint('id')
