@@ -228,7 +228,8 @@ with app.app_context():
                                 "which combines modern attractions, thermal pools, SPA and "
                                 "a fabulous atmosphere.",
                     rate=4,
-                    image="http://www.mukachevo.net/Content/img/news/2744/p_2744697_14_slidertop2.jpg", visible=True)
+                    image="https://tourinform.org.ua/wp-content/uploads/2021/08/224695943_"
+                          "184966847017529_3660725107713672017_n.jpg", visible=True)
     place17 = Place(name="Aquapark Pliazh", country="Ukraine", city="Lviv",
                     description="Water park 'Plyazh' in Lviv is the largest indoor water park in Western Ukraine. The "
                                 "total area of ​​the complex is 14 thousand square meters. m. and combines the "
@@ -602,15 +603,16 @@ with app.app_context():
     photo_10_5 = PlacePhoto(image='https://i.pinimg.com/236x/3f/56/57/3f56573fce4c46289553191d9a3d5b3c.jpg',
                             place_id=place10.id)
 
-    photo_11_1 = PlacePhoto(image='https://i.pinimg.com/236x/02/be/a7/02bea731717f9efd6a724312ca2a7380.jpg',
+    photo_11_1 = PlacePhoto(image='https://lviv.media/static/content/thumbs/1200x630/b/3b/'
+                                  'gftro2---c1200x630x50px50p-up--383fa1b555154dc65b6a9d7a478e83bb.jpg',
                             place_id=place11.id)
-    photo_11_2 = PlacePhoto(image='https://i.pinimg.com/236x/33/56/17/335617354ec242bef67196348ffc291a.jpg',
+    photo_11_2 = PlacePhoto(image='https://i2.wp.com/photo-lviv.in.ua/wp-content/uploads/2015/02/atlanty.jpg',
                             place_id=place11.id)
-    photo_11_3 = PlacePhoto(image='https://i.pinimg.com/236x/7f/8b/6c/7f8b6c9221a2c1d0dc53cd6688e876ec.jpg',
+    photo_11_3 = PlacePhoto(image='https://prolviv.com/wp-content/uploads/2017/12/525334_original.jpg',
                             place_id=place11.id)
-    photo_11_4 = PlacePhoto(image='https://i.pinimg.com/236x/ef/77/63/ef77639a1697bf8e5fdcc78e70ebd3e7.jpg',
+    photo_11_4 = PlacePhoto(image='https://i.pinimg.com/originals/8d/96/e4/8d96e4aacbacd33f0187ab523f24c652.jpg',
                             place_id=place11.id)
-    photo_11_5 = PlacePhoto(image='https://i.pinimg.com/236x/ec/79/b7/ec79b7e7b42b04cbd5529260704d2426.jpg',
+    photo_11_5 = PlacePhoto(image='https://i.pinimg.com/originals/98/9c/38/989c3865e08c2ae0f4125a0542f81565.jpg',
                             place_id=place11.id)
 
     photo_12_1 = PlacePhoto(image='https://i.pinimg.com/236x/42/55/97/42559709d41ee8c07fd1448dc611e8df.jpg',
@@ -664,7 +666,7 @@ with app.app_context():
                                   '176791931168354_3558588235874281532_n.jpg', place_id=place16.id)
     photo_16_5 = PlacePhoto(image='https://tourinform.org.ua/wp-content/uploads/2021/08/224695943_'
                                   '184966847017529_3660725107713672017_n.jpg', place_id=place16.id)
-
+    # https://tourinform.org.ua/wp-content/uploads/2021/08/224695943_184966847017529_3660725107713672017_n.jpg
     photo_17_1 = PlacePhoto(image='https://akvapark-lviv.virtual.ua/images/374587/akvapark-lviv.virtual.ua_003.jpg',
                             place_id=place17.id)
     photo_17_2 = PlacePhoto(image='https://akvapark-lviv.virtual.ua/images/374585/akvapark-lviv.virtual.ua_002.jpg',

@@ -167,11 +167,12 @@ def home():
 #     else:
 #         return "Sign up :)"
 
-@app.route('/confirm')
+@app.route('/confirm', methods=['GET'])
 def confirm():
-    response = make_response()
-    response.status_code = 200
-    return response
+    if request.method == 'GET':
+        response = make_response()
+        response.status_code = 200
+        return response
 
 
 @app.route('/confirm/<token>')
@@ -189,7 +190,8 @@ def confirm_email(token):
         db.session.add(user_to_check)
         db.session.commit()
         flash('You have confirmed your account. Thanks!', 'success')
-    return redirect(url_for('confirm'))  # return "Confirm email"  # redirect(url_for('main.home'))
+    return redirect(url_for('confirm'))
+    # return "Confirm email"  # redirect(url_for('main.home'))
 
 
 '''
