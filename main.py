@@ -167,11 +167,12 @@ def home():
 #     else:
 #         return "Sign up :)"
 
-@app.route('/confirm')
+@app.route('/confirm', methods=['GET'])
 def confirm():
-    response = make_response()
-    response.status_code = 200
-    return response
+    if request.method == 'GET':
+        response = make_response()
+        response.status_code = 200
+        return response
 
 
 @app.route('/confirm/<token>')
@@ -189,7 +190,8 @@ def confirm_email(token):
         db.session.add(user_to_check)
         db.session.commit()
         flash('You have confirmed your account. Thanks!', 'success')
-    return redirect(url_for('confirm'))  # return "Confirm email"  # redirect(url_for('main.home'))
+    return redirect(url_for('confirm'))
+    # return "Confirm email"  # redirect(url_for('main.home'))
 
 
 '''
@@ -214,6 +216,7 @@ def registration():
 def registration():
     if request.method == 'POST' and request.is_json:
         user_data = UserSchema().load(request.json)
+        user_data["photo"] = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"
         new_user = User(**user_data)
         find_email = User.query.filter_by(email=new_user.email).first()
         db.session.add(new_user)
