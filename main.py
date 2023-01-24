@@ -9,12 +9,19 @@ from forms import UserSchema
 from database.models import *
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
-from flask_httpauth import HTTPBasicAuth
 
-auth = HTTPBasicAuth()
+from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, create_refresh_token, get_jwt_identity)
+
+
+# from flask_httpauth import HTTPBasicAuth
+# auth = HTTPBasicAuth()
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:pass1234@localhost:5432/{DB_NAME}'
+
+app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config["JWT_SECRET_KEY"] = "super-secret-vnjfvnerjhnavcjienanreugvneivnkj"  # Change this!
+jwt = JWTManager(app)
 
 '''
 login_manager = LoginManager()
@@ -40,9 +47,39 @@ app.config['MAIL_DEFAULT_SENDER'] = 'leisure.guru.ver@gmail.com'
 mail = Mail(app)
 
 
-@auth.verify_password
+# Create a route to authenticate your users and return JWTs. The
+# create_access_token() function is used to actually generate the JWT.
+@app.route("/token", methods=["POST"])
+def create_token():
+    user_email = request.json.get("email", None)
+    password = request.json.get("password", None)
+    user_to_verify = User.query.filter_by(email=user_email).first()
+    if user_to_verify is not None and check_password_hash(user_to_verify.password, password):
+        # access_token = create_access_token(identity=user_email)
+        return {'access_token': create_access_token(identity=user_email),
+                'refresh_token': create_refresh_token(identity=user_email)}
+    else:
+        return {"code": 401, "message": "Bad email or password"}, 401
+
+
+@app.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    current_user = get_jwt_identity()
+    return {'access_token': create_access_token(identity=current_user)}, 200
+
+
+# Protect a route with jwt_required, which will kick out requests
+# without a valid JWT present.
+@app.route("/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    # Access the identity of the current user with get_jwt_identity
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
+
+
 def verify_password(email, password):
-    print("email: " + email + ", password: " + password)
     user_to_verify = User.query.filter_by(email=email).first()
     if user_to_verify is not None and check_password_hash(user_to_verify.password, password):
         print("email: " + email + ", password: " + password)
@@ -51,23 +88,34 @@ def verify_password(email, password):
         return False
 
 
-@auth.error_handler
-def auth_error_handler(status):
-    message = ""
-    if status == 401:
-        message = "Wrong email or password"
-    if status == 403:
-        message = "Access denied"
-    return {"code": status, "message": message}, status
+# @auth.verify_password
+# def verify_password(email, password):
+#     print("email: " + email + ", password: " + password)
+#     user_to_verify = User.query.filter_by(email=email).first()
+#     if user_to_verify is not None and check_password_hash(user_to_verify.password, password):
+#         print("email: " + email + ", password: " + password)
+#         return user_to_verify
+#     else:
+#         return False
 
 
-def authenticate():
-    message = {'message': "Authenticate."}
-    resp = jsonify(message)
+# @auth.error_handler
+# def auth_error_handler(status):
+#     message = ""
+#     if status == 401:
+#         message = "Wrong email or password"
+#     if status == 403:
+#         message = "Access denied"
+#     return {"code": status, "message": message}, status
 
-    resp.status_code = 401
-    resp.headers['WWW-Authenticate'] = 'Basic realm="Main"'
-    return resp
+
+# def authenticate():
+#     message = {'message': "Authenticate."}
+#     resp = jsonify(message)
+#
+#     resp.status_code = 401
+#     resp.headers['WWW-Authenticate'] = 'Basic realm="Main"'
+#     return resp
 
 
 # def login_required(f):
@@ -87,7 +135,7 @@ def send_mes(to, subject, url):
 
 
 @app.route('/rest-auth')
-@auth.login_required
+@jwt_required()
 def get_response():
     return {'code': 200,
             'message': 'You are authorized.'}, 200
@@ -272,10 +320,10 @@ def login():
 
 
 @app.route("/profile/logout/<int:user_id>", methods=['GET'])
-@auth.login_required
+@jwt_required()
 def logout(user_id):
     user_to_work = User.query.filter_by(id=user_id).first()
-    current_user = auth.current_user()
+    current_user = get_jwt_identity()
     print(user_id, current_user.id)
     if current_user.id != int(user_id):
         return {"code": 403,
@@ -297,10 +345,10 @@ def logout(user_id):
 
 
 @app.route("/profile/<int:user_id>", methods=['GET', 'DELETE', 'POST', 'PUT'])
-@auth.login_required
+@jwt_required()
 def user(user_id):
     user_to_work = User.query.filter_by(id=user_id).first()
-    current_user = auth.current_user()
+    current_user = get_jwt_identity()
     print(user_id, current_user.id)
     if current_user.id != int(user_id):
         return {"code": 403,
@@ -333,7 +381,7 @@ def activities():
 
 
 @app.route("/filter", methods=['POST'])
-@auth.login_required
+@jwt_required()
 def filtering():
     if request.method == 'POST':
         filter_data = request.get_json()
@@ -404,7 +452,7 @@ def filtering():
 
 
 @app.route("/trial", methods=['POST'])
-@auth.login_required
+@jwt_required()
 def trial():
     if request.method == 'POST':
         # filter_data = request.get_json()
@@ -419,7 +467,7 @@ def trial():
 
 
 @app.route("/place/<int:place_id>", methods=['GET'])
-@auth.login_required
+@jwt_required()
 def place(place_id):
     place_to_work = Place.query.filter_by(id=place_id).all()
     # user_to_work_data = request.get_json()
@@ -428,7 +476,7 @@ def place(place_id):
 
 
 @app.route("/place/photos/<int:place_id>", methods=['GET'])
-@auth.login_required
+@jwt_required()
 def place_photo(place_id):
     place_to_work = Place.query.filter_by(id=place_id).all()
     # user_to_work_data = request.get_json()
