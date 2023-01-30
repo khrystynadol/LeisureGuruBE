@@ -17,7 +17,7 @@ from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, c
 # auth = HTTPBasicAuth()
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:pass1234@localhost:5432/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:leisuregurube@localhost:5432/{DB_NAME}'
 
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config["JWT_SECRET_KEY"] = "super-secret-vnjfvnerjhnavcjienanreugvneivnkj"  # Change this!
@@ -49,14 +49,14 @@ mail = Mail(app)
 
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
-@app.route("/token", methods=["POST"])
+@app.route("/token", methods=["PUT"])
 def create_token():
     user_email = request.json.get("email", None)
     password = request.json.get("password", None)
     user_to_verify = User.query.filter_by(email=user_email).first()
     if user_to_verify is not None and check_password_hash(user_to_verify.password, password):
         # access_token = create_access_token(identity=user_email)
-        return {'access_token': create_access_token(identity=user_email),
+        return {'access_token': create_access_token(identity=user_email, additional_claims={'user_id': user_to_verify.id}),
                 'refresh_token': create_refresh_token(identity=user_email)}
     else:
         return {"code": 401, "message": "Bad email or password"}, 401
@@ -324,8 +324,8 @@ def login():
 def logout(user_id):
     user_to_work = User.query.filter_by(id=user_id).first()
     current_user = get_jwt_identity()
-    print(user_id, current_user.id)
-    if current_user.id != int(user_id):
+    print(user_id, current_user)
+    if user_to_work.email != current_user:
         return {"code": 403,
                 "message": "Access denied"}, 403
 
@@ -349,8 +349,8 @@ def logout(user_id):
 def user(user_id):
     user_to_work = User.query.filter_by(id=user_id).first()
     current_user = get_jwt_identity()
-    print(user_id, current_user.id)
-    if current_user.id != int(user_id):
+    print(user_id, current_user)
+    if user_to_work.email != current_user:
         return {"code": 403,
                 "message": "Access denied"}, 403
 
