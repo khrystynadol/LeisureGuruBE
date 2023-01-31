@@ -1,3 +1,4 @@
+import requests
 from flask import request, flash, jsonify, url_for, make_response, redirect
 from werkzeug.security import check_password_hash
 from flask_mail import Message
@@ -17,7 +18,7 @@ from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, c
 # auth = HTTPBasicAuth()
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:pass1234@localhost:5432/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:12345@localhost:5432/{DB_NAME}'
 
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config["JWT_SECRET_KEY"] = "super-secret-vnjfvnerjhnavcjienanreugvneivnkj"  # Change this!
@@ -49,14 +50,14 @@ mail = Mail(app)
 
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
-@app.route("/token", methods=["POST"])
+@app.route("/token", methods=["PUT"])
 def create_token():
     user_email = request.json.get("email", None)
     password = request.json.get("password", None)
     user_to_verify = User.query.filter_by(email=user_email).first()
     if user_to_verify is not None and check_password_hash(user_to_verify.password, password):
         # access_token = create_access_token(identity=user_email)
-        return {'access_token': create_access_token(identity=user_email),
+        return {'access_token': create_access_token(identity=user_email, additional_claims={'user_id': user_to_verify.id}),
                 'refresh_token': create_refresh_token(identity=user_email)}
     else:
         return {"code": 401, "message": "Bad email or password"}, 401
@@ -86,46 +87,6 @@ def verify_password(email, password):
         return user_to_verify
     else:
         return False
-
-
-# @auth.verify_password
-# def verify_password(email, password):
-#     print("email: " + email + ", password: " + password)
-#     user_to_verify = User.query.filter_by(email=email).first()
-#     if user_to_verify is not None and check_password_hash(user_to_verify.password, password):
-#         print("email: " + email + ", password: " + password)
-#         return user_to_verify
-#     else:
-#         return False
-
-
-# @auth.error_handler
-# def auth_error_handler(status):
-#     message = ""
-#     if status == 401:
-#         message = "Wrong email or password"
-#     if status == 403:
-#         message = "Access denied"
-#     return {"code": status, "message": message}, status
-
-
-# def authenticate():
-#     message = {'message': "Authenticate."}
-#     resp = jsonify(message)
-#
-#     resp.status_code = 401
-#     resp.headers['WWW-Authenticate'] = 'Basic realm="Main"'
-#     return resp
-
-
-# def login_required(f):
-#     @wraps(f)
-#     def decorated(*args, **kwargs):
-#         auth_b = request.authorization
-#         if not auth_b or not verify_password(auth_b.email, auth_b.password):
-#             return authenticate()
-#         return f(*args, **kwargs)
-#     return decorated
 
 
 def send_mes(to, subject, url):
@@ -178,43 +139,6 @@ def home():
     return "Home page :)"
 
 
-# @app.route("/register", methods=['POST', 'GET'])
-# def signup():
-#     if request.method == 'POST':
-#         if request.is_json:
-#             data_user = request.get_json()
-#             new_user = User(first_name=data_user['firstName'], last_name=data_user['lastName'],
-#                             email=data_user['email'], birth_date=data_user['date'],
-#                             password=generate_password_hash(data_user['password']))
-#             find_email = User.query.filter_by(email=new_user.email).first()
-#
-#             if find_email is not None:
-#                 flash("Email is already used", "error")
-#                 abort(400)
-#             elif not re.match(r'[^@]+@[^@]+\.[^@]+', new_user.email):
-#                 flash("Incorrect email")
-#                 abort(400)
-#             elif not re.match(r'[A-Za-z]+', new_user.first_name):
-#                 flash("Incorrect first name")
-#                 abort(400)
-#             elif not re.match(r'[A-Za-z]+', new_user.last_name):
-#                 flash("Incorrect last name")
-#                 abort(400)
-#             elif not new_user.first_name or not new_user.last_name or not new_user.password or not new_user.email \
-#                     or not new_user.birth_date:
-#                 flash("All fields should be entered")
-#                 abort(400)
-#             else:
-#                 db.session.add(new_user)
-#                 db.session.commit()
-#                 return {"id": new_user.id,
-#                         "email": new_user.email}
-#         else:
-#             return {"code": 400,
-#                     "message": "Not json format"}, 400
-#     else:
-#         return "Sign up :)"
-
 @app.route('/confirm', methods=['GET'])
 def confirm():
     if request.method == 'GET':
@@ -242,23 +166,6 @@ def confirm_email(token):
     # return "Confirm email"  # redirect(url_for('main.home'))
 
 
-'''
-@app.route('/registration', methods=['GET', 'POST'])
-@error_handler
-def registration():
-    if request.method == 'POST' and request.is_json:
-        data_user = UserSchema().load(request.json)
-        new_user = User(**data_user)
-        new_user.status = True
-        db.session.add(new_user)
-        db.session.commit()
-        return {"id": new_user.id,
-                "email": new_user.email}, 201
-        # jsonify(UserSchema().dump(new_user)), 201
-    return "Register"  # render_template('/register', form=form)
-'''
-
-
 @app.route('/registration', methods=['GET', 'POST'])
 @error_handler
 def registration():
@@ -266,7 +173,7 @@ def registration():
         user_data = UserSchema().load(request.json)
         user_data["photo"] = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"
         new_user = User(**user_data)
-        find_email = User.query.filter_by(email=new_user.email).first()
+        # find_email = User.query.filter_by(email=new_user.email).first()
         db.session.add(new_user)
         db.session.commit()
 
@@ -275,10 +182,11 @@ def registration():
         # html = render_template('activate.html', confirm_url=confirm_url)
         subject = "Please confirm your email"
         send_mes(new_user.email, subject, confirm_url)
-        # send_emailqwert(new_user.email, subject, html)
-        # flash('A confirmation email has been sent via email.', 'success')
-        return {"id": new_user.id,
-                "email": new_user.email}, 201
+        # return {"id": new_user.id,
+        #         "email": new_user.email}, 201
+        return {'access_token': create_access_token(identity=new_user.email,
+                                                    additional_claims={'user_id': new_user.id}),
+                'refresh_token': create_refresh_token(identity=new_user.email)}
     else:
         return {
             "code": 404,
@@ -307,8 +215,11 @@ def login():
                 db.session.commit()
                 app.config['USERNAME'] = login_data['email']
                 app.config['PASSWORD'] = login_data['password']
-                return {"id": user_login.id,
-                        "email": user_login.email}, 200
+                # return {"id": user_login.id,
+                #         "email": user_login.email}, 200
+                return {'access_token': create_access_token(identity=user_login.email,
+                                                            additional_claims={'user_id': user_login.id}),
+                        'refresh_token': create_refresh_token(identity=user_login.email)}
             else:
                 return {
                     "code": 408,
@@ -324,8 +235,8 @@ def login():
 def logout(user_id):
     user_to_work = User.query.filter_by(id=user_id).first()
     current_user = get_jwt_identity()
-    print(user_id, current_user.id)
-    if current_user.id != int(user_id):
+    print(user_id, current_user)
+    if user_to_work.email != current_user:
         return {"code": 403,
                 "message": "Access denied"}, 403
 
@@ -349,8 +260,8 @@ def logout(user_id):
 def user(user_id):
     user_to_work = User.query.filter_by(id=user_id).first()
     current_user = get_jwt_identity()
-    print(user_id, current_user.id)
-    if current_user.id != int(user_id):
+    print(user_id, current_user)
+    if user_to_work.email != current_user:
         return {"code": 403,
                 "message": "Access denied"}, 403
 
@@ -482,6 +393,17 @@ def place_photo(place_id):
     # user_to_work_data = request.get_json()
     if request.method == 'GET' and place_to_work != []:
         return json.dumps([p.format() for p in PlacePhoto.query.filter_by(place_id=place_id).all()]), 200
+
+
+@app.route('/weather', methods=['GET'])
+def weather():
+    city_data = request.get_json()
+    city = city_data["city"]
+    api_key = "d081fd79869e33def9f03881614a21da"
+    url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}"
+    weather_data = requests.get(url).json()
+    # print(jsonify(weather_data))
+    return jsonify(weather_data)
 
 
 if __name__ == "__main__":
