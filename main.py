@@ -414,7 +414,7 @@ def filtering():
             conn = psycopg2.connect(
                 database=DB_NAME,
                 user='postgres',
-                password='pass1234',
+                password='leisuregurube',
                 host='localhost',
                 port='5432'
             )

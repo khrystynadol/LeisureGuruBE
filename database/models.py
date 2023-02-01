@@ -10,7 +10,7 @@ DB_NAME = 'LeisureGuru'
 
 app.secret_key = 'super secret key'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:pass1234@localhost:5432/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:leisuregurube@localhost:5432/{DB_NAME}'
 app.debug = True
 
 
