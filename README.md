@@ -68,13 +68,38 @@ pip install waitress
 ```PowerShell
 pip install -r requirements.txt
 ```
+## Work with database
+Install PostgreSQL from https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+
+In psql create database:
+```postgresql
+CREATE DATABASE "LeisureGuru";
+```
+Check if installed:
+
+In psql:
+```postgresql
+SELECT version();
+```
+Or in terminal:
+```PowerShell
+psql --version
+```
+Create tables using alembic command:
+```PowerShell
+alembic upgrade head
+```
+Add data to tables by running add_data.py
 
 ## Run project using Waitress
 ```PowerShell
-waitress-serve --host 127.0.0.1 --port 5000 server:app
+    waitress-serve --host 127.0.0.1 --port 5000 server:app
 ```
 
 ## Deactivate venv
 ```PowerShell
 deactivate
 ```
+
+
+
