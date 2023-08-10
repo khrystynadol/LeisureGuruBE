@@ -10,18 +10,21 @@ from forms import UserSchema
 from database.models import *
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime, timedelta, date
 
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, create_refresh_token, get_jwt_identity)
+from pyowm import OWM, commons
+from datetime import datetime, timedelta
 
-
-# from flask_httpauth import HTTPBasicAuth
-# auth = HTTPBasicAuth()
+# Create an instance of the OpenWeatherMap API client
+owm = OWM('d081fd79869e33def9f03881614a21da')
+mgr = owm.weather_manager()
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:12345@localhost:5432/{DB_NAME}'
 
 app.config['PROPAGATE_EXCEPTIONS'] = True
-app.config["JWT_SECRET_KEY"] = "super-secret-vnjfvnerjhnavcjienanreugvneivnkj"  # Change this!
+app.config["JWT_SECRET_KEY"] = "super-secret-vnjfvnerjhnavcjienanreugvneivnkj"
 jwt = JWTManager(app)
 
 '''
@@ -48,8 +51,6 @@ app.config['MAIL_DEFAULT_SENDER'] = 'leisure.guru.ver@gmail.com'
 mail = Mail(app)
 
 
-# Create a route to authenticate your users and return JWTs. The
-# create_access_token() function is used to actually generate the JWT.
 @app.route("/token", methods=["PUT"])
 def create_token():
     user_email = request.json.get("email", None)
@@ -68,16 +69,6 @@ def create_token():
 def refresh():
     current_user = get_jwt_identity()
     return {'access_token': create_access_token(identity=current_user)}, 200
-
-
-# Protect a route with jwt_required, which will kick out requests
-# without a valid JWT present.
-@app.route("/protected", methods=["GET"])
-@jwt_required()
-def protected():
-    # Access the identity of the current user with get_jwt_identity
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
 
 
 def verify_password(email, password):
@@ -200,15 +191,13 @@ def login():
         login_data = request.get_json()
         user_login = User.query.filter_by(email=login_data['email']).first()
         if user_login is None:
-            return {
-                       "code": 404,
-                       "message": "User not found"
-                   }, 404
+            return {"code": 404,
+                    "message": "User not found"
+                    }, 404
         elif not check_password_hash(user_login.password, login_data['password']):
-            return {
-                       "code": 404,
-                       "message": "Incorrect password"
-                   }, 404
+            return {"code": 404,
+                    "message": "Incorrect password"
+                    }, 404
         else:
             if verify_password(login_data['email'], login_data['password']):
                 user_login.status = True
@@ -325,7 +314,7 @@ def filtering():
             conn = psycopg2.connect(
                 database=DB_NAME,
                 user='postgres',
-                password='pass1234',
+                password='12345',
                 host='localhost',
                 port='5432'
             )
@@ -395,15 +384,79 @@ def place_photo(place_id):
         return json.dumps([p.format() for p in PlacePhoto.query.filter_by(place_id=place_id).all()]), 200
 
 
+# @app.route('/weather', methods=['GET'])
+# def weather():
+#     city_data = request.get_json()
+#     city = city_data["city"]
+#     api_key = "d081fd79869e33def9f03881614a21da"
+#     url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}"
+#     weather_data = requests.get(url).json()
+#     # print(jsonify(weather_data))
+#     return jsonify(weather_data)
+
 @app.route('/weather', methods=['GET'])
-def weather():
-    city_data = request.get_json()
-    city = city_data["city"]
-    api_key = "d081fd79869e33def9f03881614a21da"
-    url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}"
-    weather_data = requests.get(url).json()
-    # print(jsonify(weather_data))
-    return jsonify(weather_data)
+def get_weather_forecast():
+    # weather_start_data = request.get_json()
+    # location = weather_start_data["location"]
+    # coor = owm.geocoding_manager()
+    # try:
+    #     observation = mgr.weather_at_place(location.split(' ')[0])
+    # except commons.exceptions.NotFoundError as notFound:
+    #     return {
+    #         "code": 400,
+    #         "message": "Place not found"
+    #     }, 400
+    # list_locations = coor.geocode(location.split(' ')[0])
+    # one_call = mgr.one_call(list_locations[0].lat, list_locations[0].lon)
+
+    weather_start_data = request.get_json()
+    location = weather_start_data["location"]
+
+    # geo_manager = owm.geocoding_manager()
+    #
+    # # geocode London (no country specified) - we'll get many results
+    # list_of_locations = geo_manager.geocode(location)
+    # city = list_of_locations[0]
+    # # list_of_locations = reg.locations_for(location, country='UA', matching='exact')  # TODO
+    # # city = list_of_locations[0]
+    # lat = city.lat
+    # lon = city.lon
+    #
+    # one_call = mgr.one_call(lat, lon)
+    # print(one_call)
+
+    # forecast_data = {}
+    # for i in range(7):
+    #     today = date.today() + timedelta(days=i)
+    #     forecast_data[date] = {'temperature': one_call.forecast_daily[i].temperature('celsius')['day'],
+    #                            'status': one_call.forecast_daily[i].detailed_status}
+
+    weather_start_data = request.get_json()
+    location = weather_start_data["location"]
+    observation = mgr.forecast_at_place(location + ',UA', 'daily')
+    w = observation.forecast
+    print(w)
+    return {
+        "status": w.status,
+        "temperature": w.temperature('celsius')
+    }
+
+    # geo_result = mgr.geocoding_API().geocode(location, country='UA')
+    # lat = geo_result.latitude
+    # lon = geo_result.longitude
+    #
+    # forecast = mgr.forecast_at_coords(lat, lon).forecast
+
+    # Create a dictionary to hold the forecast data
+    # forecast_data = {}
+    # for weather in forecast:
+    #     date = weather.reference_time('date').strftime('%Y-%m-%d')
+    #     temperature = weather.temperature('celsius')['day']
+    #     status = weather.detailed_status
+    #     forecast_data[date] = {'temperature': temperature, 'status': status}
+    #
+    # # Return the forecast data as JSON
+    # return {"ok": 200}
 
 
 if __name__ == "__main__":
